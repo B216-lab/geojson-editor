@@ -78,7 +78,7 @@ import { Icon } from "@iconify/vue";
 import VButton from "@/components/base/v-button.vue";
 import VSelect from "@/components/base/v-select.vue";
 import { useStoreModule } from "@/composables/useStoreModule";
-import { POSITION, useToast } from "vue-toastification";
+import { toast } from "vue-sonner";
 
 export default defineComponent({
   props: {
@@ -112,7 +112,7 @@ export default defineComponent({
     const longitudeColumn = ref(null);
     const nameColumn = ref(null);
     const fileToLoad = ref(null);
-    const toast = useToast();
+    // комментарии: уведомления показывать через vue-sonner
 
     const isButtonDisabled = computed(() => {
       return !(latitudeColumn.value && longitudeColumn.value);
@@ -165,11 +165,7 @@ export default defineComponent({
       }
     };
     const showSuccessMessage = () => {
-      toast(`File imported successfully`, {
-        position: POSITION.BOTTOM_CENTER,
-        timeout: 1000,
-        hideProgressBar: true
-      });
+      toast.success(`File imported successfully`, { duration: 1000 });
     }
     const processFile = async (file) => {
       const filename = file?.name?.toLowerCase();
