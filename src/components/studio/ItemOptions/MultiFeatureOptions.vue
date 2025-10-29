@@ -12,8 +12,13 @@
 import { useStoreModule } from "@/composables/useStoreModule";
 import { computed, defineComponent } from "vue";
 import VSection from "@/components/base/v-section.vue";
-import debounce from "lodash/debounce";
-import isEqual from "lodash/isEqual";
+const debounce = (fn, delay = 300) => {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), delay);
+  };
+};
 
 export default defineComponent({
   components: {
@@ -33,7 +38,7 @@ export default defineComponent({
     }, 500);
 
     const updateFillColor = (property, color) => {
-      if (!isEqual(property.value, color)) {
+      if (JSON.stringify(property.value) !== JSON.stringify(color)) {
         EditorStore.actions.updateMultipleFeatureProperties({
           featureIds: property.featureIds,
           properties: {
@@ -46,7 +51,7 @@ export default defineComponent({
     };
 
     const updateLineColor = (property, color) => {
-      if (!isEqual(property.value, color)) {
+      if (JSON.stringify(property.value) !== JSON.stringify(color)) {
         EditorStore.actions.updateMultipleFeatureProperties({
           featureIds: property.featureIds,
           properties: {
@@ -79,6 +84,7 @@ export default defineComponent({
     border-bottom: 1px solid var(--color-secondary-light);
     display: flex;
     align-items: center;
+
     h4 {
       font-weight: bold;
     }

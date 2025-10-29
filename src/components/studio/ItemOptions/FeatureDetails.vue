@@ -25,7 +25,6 @@
 <script>
 import VSection from "@/components/base/v-section.vue";
 import { computed } from "vue";
-import omit from "lodash/omit";
 import { DEFAULT_PROPERTIES } from "@/models/Feature.model";
 import { areaFormatter, distanceFormatter } from "@/utils/formatter.js";
 import { Icon } from "@iconify/vue";
@@ -69,9 +68,14 @@ export default {
       return meta;
     });
 
-    const customProperties = computed(() =>
-      omit(props?.feature?.properties, DEFAULT_PROPERTIES)
-    );
+    const customProperties = computed(() => {
+      const all = props?.feature?.properties || {};
+      const exclude = new Set(DEFAULT_PROPERTIES);
+      return Object.keys(all).reduce((acc, key) => {
+        if (!exclude.has(key)) acc[key] = all[key];
+        return acc;
+      }, {} as Record<string, any>);
+    });
 
     const propertyIds = computed(() => Object.keys(props.feature.properties));
 

@@ -3,7 +3,6 @@ import Feature, { FEATURE_TYPES } from "@/models/Feature.model";
 import { expose } from "comlink";
 import Papa from "papaparse";
 import { fileReader } from "@/utils/FileUtils";
-import { omit } from "lodash";
 import chroma from "chroma-js";
 
 const removeAltitude = (type, coordinates) => {
@@ -56,7 +55,8 @@ const extractGeoJSONFeatures = (geoJson) => {
             item.properties.fillColor[3] = 255;
           }
           // remove the color properties once transformed
-          item.properties = omit(item.properties, ["fill", "fill-opacity"]);
+          const { fill, ["fill-opacity"]: _fillOpacity, ...rest } = item.properties;
+          item.properties = { ...rest };
         } catch (error) {
           console.error(error);
         }
@@ -73,7 +73,8 @@ const extractGeoJSONFeatures = (geoJson) => {
             item.properties.lineColor[3] = 255;
           }
           // remove the color properties once transformed
-          item.properties = omit(item.properties, ["stroke", "stroke-opacity"]);
+          const { stroke, ["stroke-opacity"]: _strokeOpacity, ...rest2 } = item.properties;
+          item.properties = { ...rest2 };
         } catch (error) {
           console.error(error);
         }

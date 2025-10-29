@@ -1,5 +1,4 @@
 import chroma from "chroma-js";
-import { omit } from "lodash";
 import { expose } from "comlink";
 
 const preprocessFeaturesForExport = ({ features }) => {
@@ -19,7 +18,7 @@ const preprocessFeaturesForExport = ({ features }) => {
     ).hex();
 
     // remove the color properties once transformed
-    const processedProperties = omit(properties, ["fillColor", "lineColor"]);
+    const { fillColor: _fc, lineColor: _lc, ...processedProperties } = properties;
 
     return {
       ...item,

@@ -25,7 +25,13 @@
 import { Icon } from "@iconify/vue";
 import { getMapboxSearch } from "@/api/mapbox";
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import debounce from "lodash/debounce";
+const debounce = (fn, delay = 300) => {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), delay);
+  };
+};
 import { useStoreModule } from "@/composables/useStoreModule";
 import bbox from "@turf/bbox";
 

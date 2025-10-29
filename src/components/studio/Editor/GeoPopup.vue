@@ -22,7 +22,6 @@
 import { Icon } from "@iconify/vue";
 import { areaFormatter, distanceFormatter } from "@/utils/formatter.js";
 import { DEFAULT_PROPERTIES, FEATURE_TYPES } from "@/models/Feature.model";
-import omit from "lodash/omit";
 import { computed } from "vue";
 
 export default {
@@ -62,9 +61,13 @@ export default {
     };
 
     const customProperties = computed(() => {
-      return omit(props.feature.properties, DEFAULT_PROPERTIES)
-    }
-    );
+      const all = props.feature?.properties || {};
+      const exclude = new Set(DEFAULT_PROPERTIES);
+      return Object.keys(all).reduce((acc, key) => {
+        if (!exclude.has(key)) acc[key] = all[key];
+        return acc;
+      }, {} as Record<string, any>);
+    });
 
     const meta = computed(() => {
       if (!props.feature) return {};

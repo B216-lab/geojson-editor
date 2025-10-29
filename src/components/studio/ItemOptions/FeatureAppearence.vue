@@ -1,37 +1,16 @@
 <template>
   <div class="feature-appearences">
     <v-section v-if="enableFillColor" :title="'Fill Color'">
-      <v-color-picker
-        :color="feature.properties.fillColor"
-        :hide="feature.properties.hideFill"
-        @onChangeColor="updateFillColor"
-        @onChangeHide="updateHideFill"
-      />
+      <v-color-picker :color="feature.properties.fillColor" :hide="feature.properties.hideFill"
+        @onChangeColor="updateFillColor" @onChangeHide="updateHideFill" />
     </v-section>
     <v-section v-if="enableLineProperties" :title="'Line Color'">
-      <v-color-picker
-        :color="feature.properties.lineColor"
-        :hide="feature.properties.hideLine"
-        @onChangeColor="updateLineColor"
-        @onChangeHide="updateHideLine"
-      />
+      <v-color-picker :color="feature.properties.lineColor" :hide="feature.properties.hideLine"
+        @onChangeColor="updateLineColor" @onChangeHide="updateHideLine" />
     </v-section>
-    <!-- <v-section v-if="enableLineProperties" :title="'Line Width'">
-      <v-scale-input
-        :value="feature.properties.lineWidth"
-        :scale="feature.properties.widthScale"
-        @onWidthChange="updateLineWidth"
-        @onScaleChange="updateWidthScale"
-      />
-    </v-section> -->
     <v-section v-if="enablePointProperties" :title="'Point Radius'">
-      <v-scale-input
-        :value="feature.properties.pointRadius"
-        :scale="feature.properties.radiusScale"
-        :icon="'RadiusIcon'"
-        @onWidthChange="updatePointRadius"
-        @onScaleChange="updateRadiusScale"
-      />
+      <v-scale-input :value="feature.properties.pointRadius" :scale="feature.properties.radiusScale"
+        :icon="'RadiusIcon'" @onWidthChange="updatePointRadius" @onScaleChange="updateRadiusScale" />
     </v-section>
   </div>
 </template>
@@ -42,8 +21,13 @@ import VScaleInput from "@/components/base/v-scale-input.vue";
 import { FEATURE_TYPES } from "@/models/Feature.model";
 import { computed } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
-import debounce from "lodash/debounce";
-import isEqual from "lodash/isEqual";
+const debounce = (fn, delay = 300) => {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), delay);
+  };
+};
 
 export default {
   components: {
@@ -89,7 +73,7 @@ export default {
     }, 500);
 
     const updateFillColor = (color) => {
-      if (!isEqual(props.feature.properties.fillColor, color)) {
+      if (JSON.stringify(props.feature.properties.fillColor) !== JSON.stringify(color)) {
         actions.updateFeatureProperties({
           featureId: props.feature.properties.id,
           properties: { fillColor: color },
@@ -109,7 +93,7 @@ export default {
     };
 
     const updateLineColor = (color) => {
-      if (!isEqual(props.feature.properties.lineColor, color)) {
+      if (JSON.stringify(props.feature.properties.lineColor) !== JSON.stringify(color)) {
         actions.updateFeatureProperties({
           featureId: props.feature.properties.id,
           properties: { lineColor: color },
@@ -129,7 +113,7 @@ export default {
     };
 
     const updateLineWidth = (width) => {
-      if (!isEqual(props.feature.properties.lineWidth, width)) {
+      if (props.feature.properties.lineWidth !== width) {
         actions.updateFeatureProperties({
           featureId: props.feature.properties.id,
           properties: { lineWidth: width },
@@ -140,7 +124,7 @@ export default {
     };
 
     const updatePointRadius = (radius) => {
-      if (!isEqual(props.feature.properties.pointRadius, radius)) {
+      if (props.feature.properties.pointRadius !== radius) {
         actions.updateFeatureProperties({
           featureId: props.feature.properties.id,
           properties: { pointRadius: radius },
