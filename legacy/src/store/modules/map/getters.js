@@ -1,4 +1,4 @@
-import MapStyle from "../../../models/MapStyle.model";
+import MapStyle from "../../../../../src/models/MapStyle.model";
 import { MAP_STYLES } from "./initialState";
 
 export default {

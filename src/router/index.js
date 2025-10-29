@@ -12,19 +12,5 @@ const router = createRouter({
 });
 
 router.beforeEach(routeInterceptor);
-// checks for PWA updates on route change
-router.afterEach(() => {
-  try {
-    window.navigator.serviceWorker.getRegistrations().then((regs) =>
-      regs.forEach((reg) => {
-        reg.update();
-      })
-    );
-  } catch (error) {
-    console.log(`Unable to check for updates on route change`);
-    console.error(error);
-  }
-});
-
 
 export { router };
