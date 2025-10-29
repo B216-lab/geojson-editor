@@ -20,7 +20,7 @@
 
 <script>
 import { Icon } from "@iconify/vue";
-import { areaFormatter, distanceFormatter } from "@/utils/formatter.js";
+import { areaFormatter, distanceFormatter } from "@/utils/formatter";
 import { DEFAULT_PROPERTIES, FEATURE_TYPES } from "@/models/Feature.model";
 import { computed } from "vue";
 
@@ -66,7 +66,7 @@ export default {
       return Object.keys(all).reduce((acc, key) => {
         if (!exclude.has(key)) acc[key] = all[key];
         return acc;
-      }, {} as Record<string, any>);
+      }, {});
     });
 
     const meta = computed(() => {

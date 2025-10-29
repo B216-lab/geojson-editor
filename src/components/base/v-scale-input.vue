@@ -16,7 +16,7 @@
 <script>
 import { Icon } from "@iconify/vue";
 import VDropdown from "@/components/base/v-dropdown.vue";
-import { DISTANCE_SCALE } from "@/utils/constants.js";
+import { DISTANCE_SCALE } from "@/utils/constants";
 import slider from "vue3-slider";
 import { computed, ref } from "vue";
 export default {

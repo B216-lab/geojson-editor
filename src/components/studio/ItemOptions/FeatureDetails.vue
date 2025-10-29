@@ -26,7 +26,7 @@
 import VSection from "@/components/base/v-section.vue";
 import { computed } from "vue";
 import { DEFAULT_PROPERTIES } from "@/models/Feature.model";
-import { areaFormatter, distanceFormatter } from "@/utils/formatter.js";
+import { areaFormatter, distanceFormatter } from "@/utils/formatter";
 import { Icon } from "@iconify/vue";
 import EditablePropertyRow from "./EditablePropertyRow.vue";
 import { useStoreModule } from "@/composables/useStoreModule";
@@ -74,7 +74,7 @@ export default {
       return Object.keys(all).reduce((acc, key) => {
         if (!exclude.has(key)) acc[key] = all[key];
         return acc;
-      }, {} as Record<string, any>);
+      }, {});
     });
 
     const propertyIds = computed(() => Object.keys(props.feature.properties));
