@@ -1,65 +1,32 @@
 <template>
-  <div
-    :class="[
-      'feature-item',
-      { isHoveredFeature, isSelectedFeature },
-      { isHidden },
-    ]"
-    @click="setAsActiveFeature"
-  >
+  <div :class="[
+    'feature-item',
+    { isHoveredFeature, isSelectedFeature },
+    { isHidden },
+  ]" @click="setAsActiveFeature">
     <div class="icon" @dblclick.prevent="focusFeature">
-      <component :is="getIconForShape(feature.geometry.type)" size="16" />
+      <Icon :icon="iconForShape(feature.geometry.type)" width="16" height="16" />
     </div>
-    <form
-      @submit.prevent="$refs.featureNameInput.blur()"
-      @dblclick="setEditable"
-    >
-      <input
-        type="text"
-        name="featureName"
-        ref="featureNameInput"
-        v-model="featureName"
-        :readonly="readonly"
-        size="2"
-        @blur="renameFeature"
-        @focus="setEditable"
-      />
+    <form @submit.prevent="$refs.featureNameInput.blur()" @dblclick="setEditable">
+      <input type="text" name="featureName" ref="featureNameInput" v-model="featureName" :readonly="readonly" size="2"
+        @blur="renameFeature" @focus="setEditable" />
       <input v-show="false" type="submit" />
     </form>
-    <div
-      v-if="isEditable"
-      class="visibility-icon"
-      @click.stop="toggleVisibility"
-    >
-      <component
-        :is="
-          feature.properties.isHidden ? 'VisibilityOffIcon' : 'VisibilityIcon'
-        "
-        size="18"
-      />
+    <div v-if="isEditable" class="visibility-icon" @click.stop="toggleVisibility">
+      <Icon :icon="isHidden ? 'mdi:eye-off-outline' : 'mdi:eye-outline'" width="18" height="18" />
     </div>
   </div>
 </template>
 
 <script>
-import CrossHairIcon from "@/components/icons/CrossHairIcon.vue";
-import ShapeIcon from "@/components/icons/ShapeIcon.vue";
-import DotHollowIcon from "@/components/icons/DotHollowIcon.vue";
-import VisibilityIcon from "@/components/icons/VisibilityIcon.vue";
-import VisibilityOffIcon from "@/components/icons/VisibilityOffIcon.vue";
-import LineIcon from "@/components/icons/LineIcon.vue";
+import { Icon } from "@iconify/vue";
 import { computed, ref, watch } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 import { FEATURE_TYPES } from '@/models/Feature.model';
 
 export default {
   components: {
-    CrossHairIcon,
-    ShapeIcon,
-    LineIcon,
-    VisibilityOffIcon,
-    VisibilityIcon,
-    DotHollowIcon,
+    Icon,
   },
   props: {
     feature: {
@@ -80,18 +47,18 @@ export default {
     },
   },
   setup(props) {
-    const getIconForShape = (type) => {
+    const iconForShape = (type) => {
       switch (type) {
         case FEATURE_TYPES.Polygon:
         case FEATURE_TYPES.MultiPolygon:
-          return "ShapeIcon";
+          return "mdi:shape-outline";
         case FEATURE_TYPES.LineString:
         case FEATURE_TYPES.MultiLineString:
-          return "LineIcon";
+          return "mdi:vector-line";
         case FEATURE_TYPES.Point:
-          return "DotHollowIcon";
+          return "mdi:map-marker-outline";
         default:
-          return "ShapeIcon";
+          return "mdi:shape-outline";
       }
     };
 
@@ -157,7 +124,7 @@ export default {
     });
 
     return {
-      getIconForShape,
+      iconForShape,
       readonly,
       featureName,
       renameFeature,
@@ -189,6 +156,7 @@ export default {
     flex: 1;
     display: flex;
     flex-direction: column;
+
     input {
       flex: 1;
       padding: 5px;

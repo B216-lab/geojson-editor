@@ -1,53 +1,20 @@
 <template>
   <div class="editable-wrapper">
     <form class="editable-property-row" @submit.prevent="updateProperty">
-      <input
-        ref="propNameRef"
-        v-model="propName"
-        type="text"
-        placeholder="Name"
-        :class="['prop-name', { disabled }]"
-        @blur="updateProperty"
-        tabindex="0"
-        :readonly="disabled"
-        required
-      />
-      <input
-        ref="propValueRef"
-        v-model="propValue"
-        type="text"
-        placeholder="Empty"
-        :class="['prop-value', { disabled }]"
-        @blur="updateProperty"
-        :readonly="disabled"
-        tabindex="0"
-        required
-      />
+      <input ref="propNameRef" v-model="propName" type="text" placeholder="Name" :class="['prop-name', { disabled }]"
+        @blur="updateProperty" tabindex="0" :readonly="disabled" required />
+      <input ref="propValueRef" v-model="propValue" type="text" placeholder="Empty"
+        :class="['prop-value', { disabled }]" @blur="updateProperty" :readonly="disabled" tabindex="0" required />
       <input v-show="false" type="submit" name="" id="" />
-      <button
-        type="button"
-        class="more-button"
-        tabindex="0"
-        @click="openDropDownOptions"
-      >
-        <more-icon :size="18" />
+      <button type="button" class="more-button" tabindex="0" @click="openDropDownOptions">
+        <Icon icon="mdi:dots-vertical" width="18" height="18" />
       </button>
     </form>
-    <div
-      v-if="showEditableOptions"
-      class="editable-options"
-      v-click-away="
-        () => {
-          showEditableOptions = false;
-        }
-      "
-    >
-      <div
-        class="item"
-        v-for="option in options"
-        :key="option.id"
-        @click="selectAction(option.id)"
-      >
+    <div v-if="showEditableOptions" class="editable-options" v-click-away="() => {
+        showEditableOptions = false;
+      }
+      ">
+      <div class="item" v-for="option in options" :key="option.id" @click="selectAction(option.id)">
         <span>{{ option.name }}</span>
       </div>
     </div>
@@ -55,7 +22,7 @@
 </template>
 
 <script>
-import MoreIcon from "@/components/icons/MoreIcon.vue";
+import { Icon } from "@iconify/vue";
 import { ref, computed, watch } from "vue";
 
 export default {
@@ -74,7 +41,7 @@ export default {
     },
   },
   components: {
-    MoreIcon,
+    Icon,
   },
   setup(props, { emit }) {
     const propName = ref(props.name);
@@ -183,6 +150,7 @@ export default {
     }
   }
 }
+
 .editable-property-row {
   display: grid;
   flex-direction: row;

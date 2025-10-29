@@ -2,11 +2,11 @@
   <div class="explorer-panel">
     <div class="header">
       <h4 class="title">
-        <layers-icon class="icon" :size="18" />
+        <Icon icon="mdi:layers-outline" class="icon" width="18" height="18" />
         <span>Features</span>
       </h4>
       <button class="import-button" @click="showImportModal">
-        <add-icon class="icon" :size="18" />
+        <Icon icon="mdi:plus" class="icon" width="18" height="18" />
         Import
       </button>
     </div>
@@ -16,15 +16,13 @@
 
 <script>
 import { useStoreModule } from "@/composables/useStoreModule.js";
-import LayersIcon from "@/components/icons/LayersIcon.vue";
-import AddIcon from "@/components/icons/AddIcon.vue";
+import { Icon } from "@iconify/vue";
 import { computed, defineComponent } from "vue";
 import FeatureList from "./FeatureList.vue";
 
 export default defineComponent({
   components: {
-    LayersIcon,
-    AddIcon,
+    Icon,
     FeatureList,
   },
   setup() {
@@ -52,6 +50,7 @@ export default defineComponent({
   background: var(--color-secondary);
   overflow: hidden;
   border-right: 1px solid var(--color-secondary-light);
+
   .header {
     display: flex;
     flex-direction: row;

@@ -1,16 +1,13 @@
 <template>
   <div class="v-checkbox" @click="$emit('update:modelValue', !modelValue)">
-    <component
-      :is="modelValue ? 'CheckBoxIcon' : 'CheckBoxOutlineIcon'"
-      :size="size"
-    />
+    <Icon :icon="modelValue ? 'mdi:checkbox-marked-outline' : 'mdi:checkbox-blank-outline'" :width="size"
+      :height="size" />
     <span class="checkbox-label" v-if="label">{{ label }}</span>
   </div>
 </template>
 
 <script>
-import CheckBoxIcon from "@/components/icons/CheckBoxIcon.vue";
-import CheckBoxOutlineIcon from "@/components/icons/CheckBoxOutlineIcon.vue";
+import { Icon } from "@iconify/vue";
 
 export default {
   props: {
@@ -28,13 +25,12 @@ export default {
     },
   },
   emits: {
-      'update:modelValue': {
-          type: Boolean
-      }
+    'update:modelValue': {
+      type: Boolean
+    }
   },
   components: {
-    CheckBoxIcon,
-    CheckBoxOutlineIcon,
+    Icon,
   },
 };
 </script>

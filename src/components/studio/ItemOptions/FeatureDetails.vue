@@ -2,11 +2,7 @@
   <div class="feature-details">
     <v-section title="Measures" bold>
       <div class="metadata uneditable">
-        <dl
-          v-for="itemKey in Object.keys(defaultProperties)"
-          :key="itemKey"
-          class="item"
-        >
+        <dl v-for="itemKey in Object.keys(defaultProperties)" :key="itemKey" class="item">
           <dt>{{ defaultProperties[itemKey].name }}</dt>
           <dd>{{ defaultProperties[itemKey].value }}</dd>
         </dl>
@@ -15,20 +11,13 @@
     <v-section title="Custom Properties" bold>
       <template v-if="isShapesEditable" v-slot:header>
         <button class="add-btn" @click="addNewProperty">
-          <AddIcon size="20" />
+          <Icon icon="mdi:plus" width="20" height="20" />
         </button>
       </template>
-      <EditablePropertyRow
-        v-for="itemKey in [...Object.keys(customProperties)].reverse()"
-        :key="itemKey"
-        :name="itemKey"
-        :value="customProperties[itemKey]"
-        @update="
+      <EditablePropertyRow v-for="itemKey in [...Object.keys(customProperties)].reverse()" :key="itemKey"
+        :name="itemKey" :value="customProperties[itemKey]" @update="
           ({ name, value }) => updateProperty({ itemId: itemKey, name, value })
-        "
-        :disabled="!isShapesEditable"
-        @delete="deleteProperty"
-      />
+        " :disabled="!isShapesEditable" @delete="deleteProperty" />
     </v-section>
   </div>
 </template>
@@ -39,14 +28,14 @@ import { computed } from "vue";
 import omit from "lodash/omit";
 import { DEFAULT_PROPERTIES } from "@/models/Feature.model";
 import { areaFormatter, distanceFormatter } from "@/utils/formatter.js";
-import AddIcon from "@/components/icons/AddIcon.vue";
+import { Icon } from "@iconify/vue";
 import EditablePropertyRow from "./EditablePropertyRow.vue";
 import { useStoreModule } from "@/composables/useStoreModule";
 
 export default {
   components: {
     VSection,
-    AddIcon,
+    Icon,
     EditablePropertyRow,
   },
   props: {
@@ -175,6 +164,7 @@ export default {
       &:last-child {
         border-bottom: none;
       }
+
       dt,
       dd {
         flex: 1;

@@ -1,48 +1,29 @@
 <template>
   <div class="width-picker">
     <div class="icon">
-      <component :is="icon" size="18" />
+      <Icon :icon="iconName" width="18" height="18" />
     </div>
-    <v-dropdown
-      :value="scale"
-      :options="scaleOptions"
-      @select="updateScale"
-      width="100px"
-    />
-    <input
-      ref="widthInput"
-      type="text"
-      name="widthInput"
-      :value="value"
-      class="width-input"
-      @blur="updateLineWidth"
-      placeholder="0"
-    />
+    <v-dropdown :value="scale" :options="scaleOptions" @select="updateScale" width="100px" />
+    <input ref="widthInput" type="text" name="widthInput" :value="value" class="width-input" @blur="updateLineWidth"
+      placeholder="0" />
     <div class="slider">
-      <slider
-        v-model="width"
-        color="var(--color-primary)"
-        track-color="var(--color-secondary-light)"
-        :tooltip="false"
-        :max="1000"
-      />
+      <slider v-model="width" color="var(--color-primary)" track-color="var(--color-secondary-light)" :tooltip="false"
+        :max="1000" />
     </div>
   </div>
 </template>
 
 <script>
-import WidthIcon from "@/components/icons/WidthIcon.vue";
-import RadiusIcon from "@/components/icons/RadiusIcon.vue";
+import { Icon } from "@iconify/vue";
 import VDropdown from "@/components/base/v-dropdown.vue";
 import { DISTANCE_SCALE } from "@/utils/constants.js";
 import slider from "vue3-slider";
 import { computed, ref } from "vue";
 export default {
   components: {
-    WidthIcon,
+    Icon,
     slider,
     VDropdown,
-    RadiusIcon,
   },
   props: {
     value: {
@@ -58,6 +39,11 @@ export default {
     },
   },
   setup(props, { emit }) {
+    const iconName = computed(() => {
+      return props.icon === "RadiusIcon"
+        ? "mdi:circle-outline"
+        : "mdi:arrow-expand-horizontal";
+    });
     const width = computed({
       get() {
         return parseInt(props.value);
@@ -90,6 +76,7 @@ export default {
       updateLineWidth,
       scaleOptions: DISTANCE_SCALE,
       updateScale,
+      iconName,
     };
   },
 };

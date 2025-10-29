@@ -1,25 +1,17 @@
 <template>
-  <div
-    class="context-menu"
-    :style="{
-      top: `${y + 10}px`,
-      left: `${x + 10}px`,
-    }"
-  >
+  <div class="context-menu" :style="{
+    top: `${y + 10}px`,
+    left: `${x + 10}px`,
+  }">
     <div v-if="feature" class="header">
       <div class="icon">
-        <component :is="getIconForShape(feature.geometry.type)" size="18" />
+        <Icon :icon="iconForShape(feature.geometry.type)" width="18" height="18" />
       </div>
       <h4>{{ feature.properties.name }}</h4>
     </div>
     <div class="options">
-      <div
-        class="option"
-        v-for="item in options"
-        :key="item.id"
-        @click="selectOption(item.id)"
-      >
-        <component :is="item.icon" size="18" class="icon" />
+      <div class="option" v-for="item in options" :key="item.id" @click="selectOption(item.id)">
+        <Icon :icon="item.icon" width="18" height="18" class="icon" />
         {{ item.name }}
       </div>
     </div>
@@ -27,14 +19,7 @@
 </template>
 
 <script>
-import PinIcon from "@/components/icons/PinIcon.vue";
-import ShapeIcon from "@/components/icons/ShapeIcon.vue";
-import LineIcon from "@/components/icons/LineIcon.vue";
-import TransformIcon from "@/components/icons/TransformIcon.vue";
-import DeleteIcon from "@/components/icons/DeleteIcon.vue";
-import SearchIcon from "@/components/icons/SearchIcon.vue";
-import CopyIcon from "@/components/icons/CopyIcon.vue";
-import MapOutlinedIcon from "@/components/icons/MapOutlinedIcon.vue";
+import { Icon } from "@iconify/vue";
 
 import { computed } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
@@ -43,14 +28,7 @@ import { EDITING_MODE } from "@/store/modules/editor/initialState";
 
 export default {
   components: {
-    PinIcon,
-    ShapeIcon,
-    LineIcon,
-    DeleteIcon,
-    CopyIcon,
-    TransformIcon,
-    SearchIcon,
-    MapOutlinedIcon,
+    Icon,
   },
   props: {
     x: {
@@ -74,18 +52,18 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const getIconForShape = (type) => {
+    const iconForShape = (type) => {
       switch (type) {
         case FEATURE_TYPES.Polygon:
         case FEATURE_TYPES.MultiPolygon:
-          return "ShapeIcon";
+          return "mdi:shape-outline";
         case FEATURE_TYPES.LineString:
         case FEATURE_TYPES.MultiLineString:
-          return "LineIcon";
+          return "mdi:vector-line";
         case FEATURE_TYPES.Point:
-          return "DotHollowIcon";
+          return "mdi:map-marker-outline";
         default:
-          return "ShapeIcon";
+          return "mdi:shape-outline";
       }
     };
 
@@ -95,40 +73,40 @@ export default {
     const options = computed(() => [
       ...(props.feature && accessFlags.value.isShapesEditable
         ? [
-            ...(props.feature.geometry.type !== FEATURE_TYPES.Point
-              ? [
-                  {
-                    id: "modify",
-                    icon: "ShapeIcon",
-                    name: "Modify",
-                  },
-                  {
-                    id: "transform",
-                    icon: "TransformIcon",
-                    name: "Transform",
-                  },
-                ]
-              : []),
-            {
-              id: "delete",
-              icon: "DeleteIcon",
-              name: "Delete",
-            },
-          ]
+          ...(props.feature.geometry.type !== FEATURE_TYPES.Point
+            ? [
+              {
+                id: "modify",
+                icon: "mdi:vector-polyline-edit",
+                name: "Modify",
+              },
+              {
+                id: "transform",
+                icon: "mdi:axis-arrow",
+                name: "Transform",
+              },
+            ]
+            : []),
+          {
+            id: "delete",
+            icon: "mdi:trash-can-outline",
+            name: "Delete",
+          },
+        ]
         : []),
       ...(props.latitude && props.longitude
         ? [
-            {
-              id: "searchArea",
-              icon: "SearchIcon",
-              name: "Search this area",
-            },
-            {
-              id: "copycords",
-              icon: "CopyIcon",
-              name: "Copy Coordinates",
-            },
-          ]
+          {
+            id: "searchArea",
+            icon: "mdi:magnify",
+            name: "Search this area",
+          },
+          {
+            id: "copycords",
+            icon: "mdi:content-copy",
+            name: "Copy Coordinates",
+          },
+        ]
         : []),
     ]);
 
@@ -166,7 +144,7 @@ export default {
       emit("close");
     };
 
-    return { getIconForShape, options, selectOption };
+    return { iconForShape, options, selectOption };
   },
 };
 </script>

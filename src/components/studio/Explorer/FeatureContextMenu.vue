@@ -1,19 +1,11 @@
 <template>
-  <div
-    class="context-menu"
-    :style="{
-      top: `${y + 10}px`,
-      left: `${x + 10}px`,
-    }"
-  >
+  <div class="context-menu" :style="{
+    top: `${y + 10}px`,
+    left: `${x + 10}px`,
+  }">
     <div class="options">
-      <div
-        class="option"
-        v-for="item in options"
-        :key="item.id"
-        @click="selectOption(item.id)"
-      >
-        <component :is="item.icon" size="18" class="icon" />
+      <div class="option" v-for="item in options" :key="item.id" @click="selectOption(item.id)">
+        <Icon :icon="item.icon" width="18" height="18" class="icon" />
         {{ item.name }}
       </div>
     </div>
@@ -21,24 +13,12 @@
 </template>
 
 <script>
-import PinIcon from "@/components/icons/PinIcon.vue";
-import ShapeIcon from "@/components/icons/ShapeIcon.vue";
-import LineIcon from "@/components/icons/LineIcon.vue";
-import TransformIcon from "@/components/icons/TransformIcon.vue";
-import DeleteIcon from "@/components/icons/DeleteIcon.vue";
-import SearchIcon from "@/components/icons/SearchIcon.vue";
-import CopyIcon from "@/components/icons/CopyIcon.vue";
+import { Icon } from "@iconify/vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 
 export default {
   components: {
-    PinIcon,
-    ShapeIcon,
-    LineIcon,
-    DeleteIcon,
-    CopyIcon,
-    TransformIcon,
-    SearchIcon,
+    Icon,
   },
   props: {
     x: {
@@ -57,7 +37,7 @@ export default {
     const options = [
       {
         id: "delete",
-        icon: "DeleteIcon",
+        icon: "mdi:trash-can-outline",
         name: "Delete",
       },
     ];

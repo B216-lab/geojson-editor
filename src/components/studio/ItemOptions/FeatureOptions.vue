@@ -2,7 +2,7 @@
   <div class="feature-options">
     <div class="header">
       <div class="icon">
-        <component :is="getIconForShape(feature.geometry.type)" size="18" />
+        <Icon :icon="iconForShape(feature.geometry.type)" width="18" height="18" />
       </div>
       <h4 class="ellipsis">{{ feature.properties.name }}</h4>
     </div>
@@ -15,10 +15,7 @@
 
 <script>
 import { ref, computed, onMounted } from "vue";
-import PinIcon from "@/components/icons/PinIcon.vue";
-import ShapeIcon from "@/components/icons/ShapeIcon.vue";
-import DotHollowIcon from "@/components/icons/DotHollowIcon.vue";
-import LineIcon from "@/components/icons/LineIcon.vue";
+import { Icon } from "@iconify/vue";
 import FeatureAppearence from "./FeatureAppearence.vue";
 import FeatureDetails from "./FeatureDetails.vue";
 import { useStoreModule } from "@/composables/useStoreModule";
@@ -26,12 +23,9 @@ import { FEATURE_TYPES } from "@/models/Feature.model";
 
 export default {
   components: {
-    PinIcon,
-    ShapeIcon,
-    LineIcon,
+    Icon,
     FeatureAppearence,
     FeatureDetails,
-    DotHollowIcon,
   },
   props: {
     feature: {
@@ -48,12 +42,12 @@ export default {
     const tabs = computed(() => ({
       ...(isShapesEditable.value
         ? {
-            appearence: {
-              id: "appearence",
-              name: "Appearence",
-              component: "FeatureAppearence",
-            },
-          }
+          appearence: {
+            id: "appearence",
+            name: "Appearence",
+            component: "FeatureAppearence",
+          },
+        }
         : {}),
       details: {
         id: "details",
@@ -71,18 +65,18 @@ export default {
       activeTab.value = Object.keys(tabs.value)[0];
     });
 
-    const getIconForShape = (type) => {
+    const iconForShape = (type) => {
       switch (type) {
         case FEATURE_TYPES.Polygon:
         case FEATURE_TYPES.MultiPolygon:
-          return "ShapeIcon";
+          return "mdi:shape-outline";
         case FEATURE_TYPES.LineString:
         case FEATURE_TYPES.MultiLineString:
-          return "LineIcon";
+          return "mdi:vector-line";
         case FEATURE_TYPES.Point:
-          return "DotHollowIcon";
+          return "mdi:map-marker-outline";
         default:
-          return "ShapeIcon";
+          return "mdi:shape-outline";
       }
     };
 
@@ -90,7 +84,7 @@ export default {
       tabs: Object.values(tabs.value),
       activeComponent,
       activeTab,
-      getIconForShape,
+      iconForShape,
     };
   },
 };

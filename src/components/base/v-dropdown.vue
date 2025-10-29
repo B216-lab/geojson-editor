@@ -2,23 +2,13 @@
   <div class="dropdown">
     <div class="dropdown-select" @click="openDropDownOptions">
       <span>{{ selectedItem.name }}</span>
-      <keyboard-arrow-down-icon :class="['icon', { rotate: showDropDownOptions }]" size="18" />
+      <Icon icon="mdi:chevron-down" :class="['icon', { rotate: showDropDownOptions }]" width="18" height="18" />
     </div>
-    <div
-      v-if="showDropDownOptions"
-      class="dropdown-options"
-      v-click-away="
-        () => {
-          showDropDownOptions = false;
-        }
-      "
-    >
-      <div
-        v-for="(item, index) in getOptions"
-        :key="`${index}_${item.id}`"
-        class="item"
-        @click="selectItem(item.id)"
-      >
+    <div v-if="showDropDownOptions" class="dropdown-options" v-click-away="() => {
+        showDropDownOptions = false;
+      }
+      ">
+      <div v-for="(item, index) in getOptions" :key="`${index}_${item.id}`" class="item" @click="selectItem(item.id)">
         <span>{{ item.name }}</span>
       </div>
     </div>
@@ -26,7 +16,7 @@
 </template>
 
 <script>
-import KeyboardArrowDownIcon from "@/components/icons/KeyboardArrowDownIcon.vue";
+import { Icon } from "@iconify/vue";
 import { computed, ref } from "vue";
 
 export default {
@@ -40,7 +30,7 @@ export default {
     },
   },
   components: {
-    KeyboardArrowDownIcon,
+    Icon,
   },
   setup(props, { emit }) {
     const showDropDownOptions = ref(false);
@@ -60,8 +50,8 @@ export default {
     };
 
     const selectItem = (itemId) => {
-        emit('select', itemId);
-        showDropDownOptions.value = false;
+      emit('select', itemId);
+      showDropDownOptions.value = false;
     }
 
     return { selectedItem, getOptions, showDropDownOptions, openDropDownOptions, selectItem };
@@ -86,6 +76,7 @@ export default {
 
     .icon {
       transition: 0.1s all ease-in-out;
+
       &.rotate {
         transform: rotate(180deg);
       }

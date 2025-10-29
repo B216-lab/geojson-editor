@@ -2,37 +2,31 @@
   <div class="map-controls">
     <div class="control-wrapper">
       <div class="icon-button" role="button" @click="$emit('onClickSearch')">
-        <SearchIcon class="icon" size="20" />
+        <Icon icon="mdi:magnify" class="icon" width="20" height="20" />
       </div>
     </div>
     <div class="control-wrapper">
       <div class="icon-button" role="button" @click="$emit('onClickZoomIn')">
-        <AddIcon class="icon" size="20" />
+        <Icon icon="mdi:plus" class="icon" width="20" height="20" />
       </div>
       <div class="icon-button" role="button" @click="$emit('onClickZoomOut')">
-        <RemoveIcon class="icon" size="20" />
+        <Icon icon="mdi:minus" class="icon" width="20" height="20" />
       </div>
     </div>
     <div class="control-wrapper">
       <div class="icon-button" role="button" @click="$emit('onClickFitScreen')">
-        <FitScreenIcon class="icon" size="20" />
+        <Icon icon="mdi:fit-to-screen-outline" class="icon" width="20" height="20" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import SearchIcon from "@/components/icons/SearchIcon.vue";
-import AddIcon from "@/components/icons/AddIcon.vue";
-import RemoveIcon from "@/components/icons/RemoveIcon.vue";
-import FitScreenIcon from "@/components/icons/FitScreenIcon.vue";
+import { Icon } from "@iconify/vue";
 
 export default {
   components: {
-    SearchIcon,
-    AddIcon,
-    RemoveIcon,
-    FitScreenIcon
+    Icon
   },
 };
 </script>
@@ -62,6 +56,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
+
       &:hover {
         background: var(--color-secondary-light);
         cursor: pointer;

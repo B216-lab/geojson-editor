@@ -2,26 +2,17 @@
   <div class="map-search-background" @click.self="$emit('close')">
     <div class="map-search">
       <form class="header" @submit.prevent="selectActiveItem">
-        <SearchIcon size="20" />
-        <input
-          ref="searchInputRef"
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search placess..."
-        />
-        <button type="submit" v-show="false"/>
+        <Icon icon="mdi:magnify" width="20" height="20" />
+        <input ref="searchInputRef" v-model="searchQuery" type="text" placeholder="Search placess..." />
+        <button type="submit" v-show="false" />
         <button class="close-btn" @click="$emit('close')">
-          <ClearIcon size="20" />
+          <Icon icon="mdi:close" width="20" height="20" />
         </button>
       </form>
       <div v-if="searchResults && searchResults.length" class="contents">
-        <div
-          v-for="(feature, index) in searchResults"
-          :key="feature.id"
-          :class="['search-result', { selected: selectedItemIndex === index}]"
-          @click="selectFeature(feature)"
-          @mouseenter="selectedItemIndex = index"
-        >
+        <div v-for="(feature, index) in searchResults" :key="feature.id"
+          :class="['search-result', { selected: selectedItemIndex === index }]" @click="selectFeature(feature)"
+          @mouseenter="selectedItemIndex = index">
           <h4>{{ feature.text }}</h4>
           <p class="ellipsis">{{ feature.place_name || feature.place_name }}</p>
         </div>
@@ -31,8 +22,7 @@
 </template>
 
 <script>
-import ClearIcon from "@/components/icons/ClearIcon.vue";
-import SearchIcon from "@/components/icons/SearchIcon.vue";
+import { Icon } from "@iconify/vue";
 import { getMapboxSearch } from "@/api/mapbox";
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import debounce from "lodash/debounce";
@@ -41,8 +31,7 @@ import bbox from "@turf/bbox";
 
 export default {
   components: {
-    ClearIcon,
-    SearchIcon,
+    Icon,
   },
   setup(_, { emit }) {
     const searchInputRef = ref();
@@ -51,7 +40,7 @@ export default {
     const searchResults = ref([]);
     const EditorStore = useStoreModule("editor");
     const MapStore = useStoreModule("map");
-    const searchLocation = computed(()=> MapStore.getters.getSearchLocation);
+    const searchLocation = computed(() => MapStore.getters.getSearchLocation);
     const selectedItemIndex = ref(0);
 
     const triggerSearch = async () => {
@@ -79,7 +68,7 @@ export default {
         ];
         EditorStore.actions.updateBoundingBox({ bbox: _bbox });
       } else {
-        const bb = bbox({ 
+        const bb = bbox({
           type: "Feature",
           geometry: feature.geometry
         });
@@ -99,13 +88,13 @@ export default {
 
     const setupShortCuts = (event) => {
       const end = searchQuery.value.length;
-      switch(event.key) {
+      switch (event.key) {
         case "Escape":
           emit('close');
           break;
         case "ArrowDown":
           searchInputRef.value.setSelectionRange(end, end);
-          selectedItemIndex.value = Math.min(selectedItemIndex.value + 1, searchResults.value.length-1);
+          selectedItemIndex.value = Math.min(selectedItemIndex.value + 1, searchResults.value.length - 1);
           break;
         case "ArrowUp":
           searchInputRef.value.setSelectionRange(end, end);
@@ -221,7 +210,8 @@ export default {
           border-radius: 0 0 6px 6px;
         }
 
-        &:hover, &.selected{
+        &:hover,
+        &.selected {
           cursor: pointer;
           background: var(--color-secondary-light);
         }

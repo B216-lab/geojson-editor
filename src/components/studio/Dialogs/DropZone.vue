@@ -4,12 +4,12 @@
       <div class="header">
         <h2>Import Files</h2>
         <button class="close-btn" @click="$emit('close')">
-          <ClearIcon :size="18" />
+          <Icon icon="mdi:close" width="18" height="18" />
         </button>
       </div>
       <div class="import-status-area">
         <div class="file-icon">
-          <FileUploadIcon :size="24" class="icon" />
+          <Icon icon="mdi:file-upload-outline" width="24" height="24" class="icon" />
         </div>
         <div class="texts">
           <h4>
@@ -22,15 +22,13 @@
 </template>
 
 <script>
-import ClearIcon from "@/components/icons/ClearIcon.vue";
-import FileUploadIcon from "@/components/icons/FileUploadIcon.vue";
+import { Icon } from "@iconify/vue";
 import { computed, onMounted } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 
 export default {
   components: {
-    ClearIcon,
-    FileUploadIcon,
+    Icon,
   },
   props: {
     file: {

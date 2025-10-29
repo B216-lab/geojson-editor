@@ -1,108 +1,70 @@
 <template>
-  <div
-    class="file-import-modal-background"
-    @dragover.prevent
-    @click.self="$emit('close')"
-  >
+  <div class="file-import-modal-background" @dragover.prevent @click.self="$emit('close')">
     <div class="import-modal">
       <div class="header">
         <div class="tabs">
-          <div
-            v-for="tab in tabs"
-            :key="tab.id"
-            :class="['tab', { active: activeTab === tab.id }]"
-            @click="activeTab = tab.id"
-          >
+          <div v-for="tab in tabs" :key="tab.id" :class="['tab', { active: activeTab === tab.id }]"
+            @click="activeTab = tab.id">
             {{ tab.name }}
           </div>
         </div>
         <button class="close-btn" @click="$emit('close')">
-          <ClearIcon size="20" />
+          <Icon icon="mdi:close" width="20" height="20" />
         </button>
       </div>
       <div class="contents">
         <div v-if="csvData" class="csv-options">
           <div class="content-header">
             <div class="icon-wrapper">
-              <FileUploadIcon :size="24" class="icon" />
+              <Icon icon="mdi:file-upload-outline" width="24" height="24" class="icon" />
             </div>
             <div class="texts">
               <h4>{{ csvData.filename }}</h4>
               <p>{{ csvData.data.length }} records found in this file</p>
             </div>
             <button class="clear-btn" @click="resetCSVImport">
-              <ClearIcon size="20" />
+              <Icon icon="mdi:close" width="20" height="20" />
             </button>
           </div>
           <div class="import-form">
             <div class="input-wrapper">
               <label for="latitude">Latitude Column</label>
-              <v-select
-                :placeholder="'Choose column'"
-                :value="latitudeColumn"
-                :options="coordinateOptions"
-                @select="(value) => (latitudeColumn = value)"
-              />
+              <v-select :placeholder="'Choose column'" :value="latitudeColumn" :options="coordinateOptions"
+                @select="(value) => (latitudeColumn = value)" />
             </div>
             <div class="input-wrapper">
               <label for="longitude">Longitude Column</label>
-              <v-select
-                :placeholder="'Choose column'"
-                :value="longitudeColumn"
-                :options="coordinateOptions"
-                @select="(value) => (longitudeColumn = value)"
-              />
+              <v-select :placeholder="'Choose column'" :value="longitudeColumn" :options="coordinateOptions"
+                @select="(value) => (longitudeColumn = value)" />
             </div>
           </div>
           <div class="input-wrapper" style="margin-top: 10px">
-            <label for="longitude" style="margin-bottom: 5px"
-              >Name Column (Optional)</label
-            >
-            <v-select
-              :placeholder="'Choose column'"
-              :value="nameColumn"
-              :options="columnOptions"
-              @select="(value) => (nameColumn = value)"
-            />
+            <label for="longitude" style="margin-bottom: 5px">Name Column (Optional)</label>
+            <v-select :placeholder="'Choose column'" :value="nameColumn" :options="columnOptions"
+              @select="(value) => (nameColumn = value)" />
             <p class="help-text">
               This column values will be used to name the imported points.
             </p>
           </div>
         </div>
-        <div
-          v-else
-          :class="['drop-zone', { disabled: isReadingFile }]"
-          @click="openFilePicker"
-          @drop="captureDrop"
-        >
+        <div v-else :class="['drop-zone', { disabled: isReadingFile }]" @click="openFilePicker" @drop="captureDrop">
           <div class="icon-wrapper">
-            <FileUploadIcon :size="40" class="icon" />
+            <Icon icon="mdi:file-upload-outline" width="40" height="40" class="icon" />
           </div>
           <div v-if="isReadingFile" class="progress-bar"></div>
           <div v-else class="texts">
             <h4>Click here or drag and drop your file here to import.</h4>
             <p>Supports .geojson, .json, and .csv file formats</p>
           </div>
-          <input
-            type="file"
-            ref="fileImportInputRef"
-            id="fileImportInput"
-            v-show="false"
-            accept="text/csv, application/json, application/geo+json"
-            @change="loadSelectedFile"
-          />
+          <input type="file" ref="fileImportInputRef" id="fileImportInput" v-show="false"
+            accept="text/csv, application/json, application/geo+json" @change="loadSelectedFile" />
         </div>
       </div>
       <div v-if="showFooter" class="footer">
-        <v-button
-          :text="'Import'"
-          :disabled="isButtonDisabled"
-          :isLoading="isReadingFile"
-          @click="() => loadCSVFeatures()"
-          small
-        >
+        <v-button :text="'Import'" :disabled="isButtonDisabled" :isLoading="isReadingFile"
+          @click="() => loadCSVFeatures()" small>
           <template v-slot:iconLeft>
-            <add-icon style="margin-right: 5px" />
+            <Icon icon="mdi:plus" width="18" height="18" style="margin-right: 5px" />
           </template>
         </v-button>
       </div>
@@ -112,11 +74,9 @@
 
 <script>
 import { computed, defineComponent, onMounted, ref, watch } from "vue";
-import ClearIcon from "@/components/icons/ClearIcon.vue";
+import { Icon } from "@iconify/vue";
 import VButton from "@/components/base/v-button.vue";
 import VSelect from "@/components/base/v-select.vue";
-import AddIcon from "@/components/icons/AddIcon.vue";
-import FileUploadIcon from "@/components/icons/FileUploadIcon.vue";
 import { useStoreModule } from "@/composables/useStoreModule";
 import { POSITION, useToast } from "vue-toastification";
 
@@ -127,10 +87,8 @@ export default defineComponent({
     },
   },
   components: {
-    ClearIcon,
+    Icon,
     VButton,
-    AddIcon,
-    FileUploadIcon,
     VSelect,
   },
   setup(props, { emit }) {
@@ -532,12 +490,10 @@ export default defineComponent({
           min-height: 2px;
           max-height: 2px;
           height: 2px;
-          background: repeating-linear-gradient(
-            to right,
-            var(--color-primary-light) 0%,
-            var(--color-primary-light) 50%,
-            var(--color-primary) 100%
-          );
+          background: repeating-linear-gradient(to right,
+              var(--color-primary-light) 0%,
+              var(--color-primary-light) 50%,
+              var(--color-primary) 100%);
           background-size: 200% auto;
           background-position: 0 100%;
           animation: gradient 1s infinite;
@@ -549,10 +505,12 @@ export default defineComponent({
           0% {
             background-position: 0 0;
           }
+
           100% {
             background-position: -200% 0;
           }
         }
+
         .texts {
           display: flex;
           flex-direction: column;
@@ -570,6 +528,7 @@ export default defineComponent({
         &:hover {
           cursor: pointer;
           border: 2px dashed var(--color-primary);
+
           .icon-wrapper {
             opacity: 1;
           }

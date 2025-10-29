@@ -1,53 +1,23 @@
 <template>
   <div class="nav-bar">
     <div class="header">
-      <form
-        @submit.prevent="$refs.fileNameRef.blur()"
-        @click="setFilenameEditable"
-      >
-        <input
-          ref="fileNameRef"
-          class="filename"
-          v-model="filename"
-          :readonly="readonly"
-          @blur="updateFilename"
-          placeholder="Enter File Name"
-        />
-        <input
-          v-if="accessFlags.canChangeProjectName"
-          v-show="false"
-          type="submit"
-        />
+      <form @submit.prevent="$refs.fileNameRef.blur()" @click="setFilenameEditable">
+        <input ref="fileNameRef" class="filename" v-model="filename" :readonly="readonly" @blur="updateFilename"
+          placeholder="Enter File Name" />
+        <input v-if="accessFlags.canChangeProjectName" v-show="false" type="submit" />
       </form>
-      <lock-icon
-        v-if="!accessFlags.canChangeProjectName"
-        size="18"
-        class="lock-icon"
-      />
+      <Icon v-if="!accessFlags.canChangeProjectName" icon="mdi:lock-outline" width="18" height="18" class="lock-icon" />
     </div>
     <div class="tool-bar">
-      <div
-        v-if="accessFlags.showTools"
-        class="draw-tools"
-        @mouseenter="createToolTipTrigger"
-        @mouseleave="clearToolTipTrigger"
-      >
-        <div
-          v-for="(tool, index) in tools"
-          :key="tool.id"
-          :class="['tool', { active: activeTool === tool.id }]"
-          @click="setActiveTool(tool.id)"
-          @mouseenter="setActiveHoverItemIndex(index)"
-        >
-          <component :is="tool.icon" :size="18" />
+      <div v-if="accessFlags.showTools" class="draw-tools" @mouseenter="createToolTipTrigger"
+        @mouseleave="clearToolTipTrigger">
+        <div v-for="(tool, index) in tools" :key="tool.id" :class="['tool', { active: activeTool === tool.id }]"
+          @click="setActiveTool(tool.id)" @mouseenter="setActiveHoverItemIndex(index)">
+          <Icon :icon="iconForTool(tool.id)" width="18" height="18" />
         </div>
-        <div
-          v-if="showHelpToolTip"
-          class="help-tooltip"
-          :style="{
-            transform: `translateX(${activeHoverItemIndex * 42}px)`,
-          }"
-        >
+        <div v-if="showHelpToolTip" class="help-tooltip" :style="{
+          transform: `translateX(${activeHoverItemIndex * 42}px)`,
+        }">
           <h4>
             {{ hoveredTool.name }}
             <span class="shortcut">{{ hoveredTool.shortcut }}</span>
@@ -61,62 +31,28 @@
     </div>
     <div class="map-options">
       <button class="btn-download" @click="toggleDownloadOptions">
-        <DownloadIcon :size="18" />
+        <Icon icon="mdi:download" width="18" height="18" />
         Export
-        <KeyboardArrowIcon :size="14" />
+        <Icon icon="mdi:chevron-down" width="14" height="14" />
       </button>
-      <DownloadOptions
-        v-if="showDownloadOptions"
-        @close="showDownloadOptions = false"
-        @saveLocal="saveFile"
-        @saveGeoJson="saveGeoJson"
-        @saveKML="saveKML"
-        @saveScreenshot="saveScreenshot"
-      />
+      <DownloadOptions v-if="showDownloadOptions" @close="showDownloadOptions = false" @saveLocal="saveFile"
+        @saveGeoJson="saveGeoJson" @saveKML="saveKML" @saveScreenshot="saveScreenshot" />
     </div>
   </div>
 </template>
 
 <script>
-import SelectIcon from "@/components/icons/SelectIcon.vue";
-import DotIcon from "@/components/icons/DotIcon.vue";
-import PinIcon from "@/components/icons/PinIcon.vue";
-import ShapeIcon from "@/components/icons/ShapeIcon.vue";
-import LineIcon from "@/components/icons/LineIcon.vue";
-import MeasureIcon from "@/components/icons/MeasureIcon.vue";
-import HandIcon from "@/components/icons/HandIcon.vue";
-import DownloadIcon from "@/components/icons/DownloadIcon.vue";
-import ShareIcon from "@/components/icons/ShareIcon.vue";
-import EllipseIcon from "@/components/icons/EllipseIcon.vue";
-import RectangleIcon from "@/components/icons/RectangleIcon.vue";
-import PolygonIcon from "@/components/icons/PolygonIcon.vue";
-import CrossHairIcon from "@/components/icons/CrossHairIcon.vue";
-import KeyboardArrowIcon from "@/components/icons/KeyboardArrowDownIcon.vue";
+import { Icon } from "@iconify/vue";
 import DownloadOptions from "@/components/studio/Menus/DownloadOptions.vue";
 import { MAP_TOOLS } from "@/store/modules/editor/initialState.js";
 import { computed, ref, watch } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
-import LockIcon from "@/components/icons/LockIcon.vue";
 import { createRoute } from "@/router";
 
 export default {
   components: {
-    SelectIcon,
-    PinIcon,
-    ShapeIcon,
-    DotIcon,
-    LineIcon,
-    MeasureIcon,
-    HandIcon,
-    DownloadIcon,
-    ShareIcon,
-    RectangleIcon,
-    EllipseIcon,
-    PolygonIcon,
-    CrossHairIcon,
-    KeyboardArrowIcon,
+    Icon,
     DownloadOptions,
-    LockIcon,
   },
   setup() {
     const { getters, actions } = useStoreModule("editor");
@@ -125,6 +61,24 @@ export default {
     const activeTool = computed(() => getters.getActiveTool);
     const tools = Object.values(MAP_TOOLS);
     const setActiveTool = actions.setActiveTool;
+    const iconForTool = (toolId) => {
+      switch (toolId) {
+        case "select":
+          return "mdi:cursor-default-outline";
+        case "polygon":
+        case "rectangle":
+        case "ellipse":
+          return "mdi:shape-outline";
+        case "line":
+          return "mdi:vector-line";
+        case "point":
+          return "mdi:map-marker-outline";
+        case "measure":
+          return "mdi:ruler";
+        default:
+          return "mdi:shape-outline";
+      }
+    };
     const saveFile = actions.saveAsGeoJson;
     const saveGeoJson = actions.saveAsGeoJson;
     const saveKML = actions.saveAsKML;
@@ -217,6 +171,7 @@ export default {
       saveKML,
       saveScreenshot,
       createRoute,
+      iconForTool,
     };
   },
 };
@@ -280,6 +235,7 @@ export default {
       }
     }
   }
+
   .tool-bar {
     display: flex;
     flex-direction: row;
@@ -334,7 +290,8 @@ export default {
         &:after {
           content: " ";
           position: absolute;
-          bottom: 100%; /* At the top of the tooltip */
+          bottom: 100%;
+          /* At the top of the tooltip */
           left: 50%;
           margin-left: -5px;
           border-width: 5px;
@@ -360,6 +317,7 @@ export default {
       }
     }
   }
+
   .map-options {
     position: relative;
     display: flex;

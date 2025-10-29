@@ -2,41 +2,25 @@
   <div class="base-map-options">
     <div class="header">
       <div class="icon">
-        <MapIcon :size="18" />
+        <Icon icon="mdi:map-outline" width="18" height="18" />
       </div>
       <h4>Map and Visuals</h4>
     </div>
     <v-section title="Map Style">
       <div class="map-style-selector">
         <div class="dropdown-select" @click="openDropDownOptions">
-          <img
-            :src="styles[activeStyle].image"
-            :alt="styles[activeStyle].name"
-            class="thumbnail"
-          />
+          <img :src="styles[activeStyle].image" :alt="styles[activeStyle].name" class="thumbnail" />
           <dl>
             <dt>{{ styles[activeStyle].name }}</dt>
             <dd>Mapbox style</dd>
           </dl>
-          <KeyboardArrowDownIcon
-            :class="['icon', { rotate: showDropDownOptions }]"
-          />
+          <Icon icon="mdi:chevron-down" :class="['icon', { rotate: showDropDownOptions }]" width="18" height="18" />
         </div>
-        <div
-          v-if="showDropDownOptions"
-          class="dropdown-options"
-          v-click-away="
-            () => {
-              showDropDownOptions = false;
-            }
-          "
-        >
-          <div
-            v-for="item in Object.values(styles)"
-            :key="item.id"
-            class="item"
-            @click="selectActiveMapStyle(item.id)"
-          >
+        <div v-if="showDropDownOptions" class="dropdown-options" v-click-away="() => {
+            showDropDownOptions = false;
+          }
+          ">
+          <div v-for="item in Object.values(styles)" :key="item.id" class="item" @click="selectActiveMapStyle(item.id)">
             <img :src="item.image" :alt="item.name" class="thumbnail" />
             <dl>
               <dt>{{ item.name }}</dt>
@@ -48,11 +32,8 @@
     </v-section>
     <v-section title="Map Labels">
       <div class="item-row">
-        <VCheckBox
-          :modelValue="showMapLabels"
-          @update:modelValue="(value) => setShowMapLabels(value)"
-          label="Show Map Labels"
-        />
+        <VCheckBox :modelValue="showMapLabels" @update:modelValue="(value) => setShowMapLabels(value)"
+          label="Show Map Labels" />
       </div>
     </v-section>
     <v-section title="Visualization">
@@ -64,11 +45,8 @@
         />
       </div> -->
       <div class="item-row">
-        <VCheckBox
-          :modelValue="getShowPropertiesPopup"
-          @update:modelValue="(value) => setShowPropertiesPopup(value)"
-          label="Show Properties on Hover"
-        />
+        <VCheckBox :modelValue="getShowPropertiesPopup" @update:modelValue="(value) => setShowPropertiesPopup(value)"
+          label="Show Properties on Hover" />
       </div>
     </v-section>
   </div>
@@ -76,9 +54,8 @@
 
 <script>
 import VSection from "@/components/base/v-section.vue";
-import MapIcon from "@/components/icons/MapIcon.vue";
+import { Icon } from "@iconify/vue";
 import VCheckBox from "@/components/base/v-checkbox.vue";
-import KeyboardArrowDownIcon from "@/components/icons/KeyboardArrowDownIcon.vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 
 import { ref, computed } from "vue";
@@ -86,8 +63,7 @@ import { ref, computed } from "vue";
 export default {
   components: {
     VSection,
-    MapIcon,
-    KeyboardArrowDownIcon,
+    Icon,
     VCheckBox,
   },
   setup() {
@@ -184,6 +160,7 @@ export default {
 
       .icon {
         transition: 0.1s all ease-in-out;
+
         &.rotate {
           transform: rotate(180deg);
         }

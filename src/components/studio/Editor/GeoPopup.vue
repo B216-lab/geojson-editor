@@ -1,24 +1,16 @@
 <template>
-  <div
-    v-if="feature && x && y"
-    class="geo-popup"
-    :style="{
-      top: `${y + 10}px`,
-      left: `${x + 10}px`,
-    }"
-  >
+  <div v-if="feature && x && y" class="geo-popup" :style="{
+    top: `${y + 10}px`,
+    left: `${x + 10}px`,
+  }">
     <div class="header">
       <div class="icon">
-        <component :is="getIconForShape(feature.geometry.type)" size="18" />
+        <Icon :icon="iconForShape(feature.geometry.type)" width="18" height="18" />
       </div>
       <h4>{{ feature.properties.name }}</h4>
     </div>
     <div v-if="showProperties" class="contents">
-      <dl
-        v-for="(metadata, index) in meta"
-        :key="`meta-${index}`"
-        class="metadata-item"
-      >
+      <dl v-for="(metadata, index) in meta" :key="`meta-${index}`" class="metadata-item">
         <dt class="title">{{ metadata.name }}</dt>
         <dd class="value">{{ metadata.value }}</dd>
       </dl>
@@ -27,10 +19,7 @@
 </template>
 
 <script>
-import PinIcon from "@/components/icons/PinIcon.vue";
-import DotHollowIcon from "@/components/icons/DotHollowIcon.vue";
-import ShapeIcon from "@/components/icons/ShapeIcon.vue";
-import LineIcon from "@/components/icons/LineIcon.vue";
+import { Icon } from "@iconify/vue";
 import { areaFormatter, distanceFormatter } from "@/utils/formatter.js";
 import { DEFAULT_PROPERTIES, FEATURE_TYPES } from "@/models/Feature.model";
 import omit from "lodash/omit";
@@ -38,10 +27,7 @@ import { computed } from "vue";
 
 export default {
   components: {
-    PinIcon,
-    ShapeIcon,
-    LineIcon,
-    DotHollowIcon,
+    Icon,
   },
   props: {
     x: {
@@ -60,23 +46,24 @@ export default {
     },
   },
   setup(props) {
-    const getIconForShape = (type) => {
+    const iconForShape = (type) => {
       switch (type) {
         case FEATURE_TYPES.Polygon:
         case FEATURE_TYPES.MultiPolygon:
-          return "ShapeIcon";
+          return "mdi:shape-outline";
         case FEATURE_TYPES.LineString:
         case FEATURE_TYPES.MultiLineString:
-          return "LineIcon";
+          return "mdi:vector-line";
         case FEATURE_TYPES.Point:
-          return "DotHollowIcon";
+          return "mdi:map-marker-outline";
         default:
-          return "ShapeIcon";
+          return "mdi:shape-outline";
       }
     };
 
-    const customProperties = computed(() =>{
-      return omit(props.feature.properties, DEFAULT_PROPERTIES)}
+    const customProperties = computed(() => {
+      return omit(props.feature.properties, DEFAULT_PROPERTIES)
+    }
     );
 
     const meta = computed(() => {
@@ -111,7 +98,7 @@ export default {
       return meta;
     });
 
-    return { getIconForShape, meta };
+    return { iconForShape, meta };
   },
 };
 </script>
