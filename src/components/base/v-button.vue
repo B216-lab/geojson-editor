@@ -134,9 +134,7 @@ export default {
   &.gradient {
     opacity: 1;
     background: var(--color-primary-gradient);
-  }
-
-  &.danger {
+  }  &.danger {
     opacity: 0.8;
     background: var(--color-error);
   }
