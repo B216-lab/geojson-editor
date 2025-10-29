@@ -13,10 +13,8 @@
         </div>
         <div class="texts">
           <h4>
-            Importing <strong>{{ filename }}</strong
-            >...
+            Importing <strong>{{ filename }}</strong>...
           </h4>
-          <VLoadingBar />
         </div>
       </div>
     </div>
@@ -27,14 +25,12 @@
 import ClearIcon from "@/components/icons/ClearIcon.vue";
 import FileUploadIcon from "@/components/icons/FileUploadIcon.vue";
 import { computed, onMounted } from "vue";
-import VLoadingBar from "@/components/base/v-loading-bar.vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 
 export default {
   components: {
     ClearIcon,
     FileUploadIcon,
-    VLoadingBar,
   },
   props: {
     file: {
@@ -122,8 +118,7 @@ export default {
         flex: 1;
         margin-left: 15px;
 
-        h4 {
-        }
+        h4 {}
       }
     }
   }
