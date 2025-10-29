@@ -24,7 +24,7 @@ import { Icon } from "@iconify/vue";
 import { computed } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 import { FEATURE_TYPES } from "@/models/Feature.model";
-import { EDITING_MODE } from "@/store/modules/editor/initialState";
+import { EDITING_MODE } from "@/stores/editor";
 
 export default {
   components: {

@@ -44,7 +44,7 @@
 <script>
 import { Icon } from "@iconify/vue";
 import DownloadOptions from "@/components/studio/Menus/DownloadOptions.vue";
-import { MAP_TOOLS } from "@/store/modules/editor/initialState.js";
+import { MAP_TOOLS } from "@/stores/editor";
 import { computed, ref, watch } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 import { createRoute } from "@/router";
