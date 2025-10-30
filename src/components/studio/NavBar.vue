@@ -24,81 +24,60 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { MAP_TOOLS } from "@/stores/editor";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 
-export default {
-  components: {
-    Icon,
-  },
-  setup() {
-    const { getters, actions } = useStoreModule("editor");
-    const UIStore = useStoreModule("UI");
-    const accessFlags = computed(() => UIStore.getters.getAccessFlags);
-    const activeTool = computed(() => getters.getActiveTool);
-    const tools = Object.values(MAP_TOOLS);
-    const setActiveTool = actions.setActiveTool;
-    const iconForTool = (toolId) => {
-      switch (toolId) {
-        case "select":
-          return "mdi:cursor-default-outline";
-        case "polygon":
-          return "mdi:shape-polygon-plus";
-        case "rectangle":
-          return "mdi:rectangle-outline";
-        case "ellipse":
-          return "mdi:ellipse-outline";
-        case "line":
-          return "mdi:vector-line";
-        case "point":
-          return "mdi:map-marker-outline";
-        case "measure":
-          return "mdi:ruler";
-        default:
-          return "mdi:shape-outline";
-      }
-    };
-    const activeHoverItemIndex = ref(0);
-    const hoveredTool = computed(() => tools[activeHoverItemIndex.value]);
-    const showHelpToolTip = ref(false);
-    const tooltipTrigger = ref(null);
+const { getters, actions } = useStoreModule("editor") as any;
+const UIStore = useStoreModule("UI") as any;
+const accessFlags = computed(() => UIStore.getters.getAccessFlags);
+const activeTool = computed(() => getters.getActiveTool);
+const tools = Object.values(MAP_TOOLS);
+const setActiveTool = actions.setActiveTool;
 
+const iconForTool = (toolId: string) => {
+  switch (toolId) {
+    case "select":
+      return "mdi:cursor-default-outline";
+    case "polygon":
+      return "mdi:shape-polygon-plus";
+    case "rectangle":
+      return "mdi:rectangle-outline";
+    case "ellipse":
+      return "mdi:ellipse-outline";
+    case "line":
+      return "mdi:vector-line";
+    case "point":
+      return "mdi:map-marker-outline";
+    case "measure":
+      return "mdi:ruler";
+    default:
+      return "mdi:shape-outline";
+  }
+};
 
+const activeHoverItemIndex = ref(0);
+const hoveredTool = computed(() => (tools as any)[activeHoverItemIndex.value]);
+const showHelpToolTip = ref(false);
+const tooltipTrigger = ref<number | null>(null);
 
-    const setActiveHoverItemIndex = (index) => {
-      activeHoverItemIndex.value = index;
-    };
+const setActiveHoverItemIndex = (index: number) => {
+  activeHoverItemIndex.value = index;
+};
 
-    const createToolTipTrigger = () => {
-      tooltipTrigger.value = setTimeout(() => {
-        showHelpToolTip.value = true;
-      }, 1000);
-    };
+const createToolTipTrigger = () => {
+  tooltipTrigger.value = window.setTimeout(() => {
+    showHelpToolTip.value = true;
+  }, 1000);
+};
 
-    const clearToolTipTrigger = () => {
-      showHelpToolTip.value = false;
-      if (tooltipTrigger.value) {
-        window.clearTimeout(tooltipTrigger.value);
-      }
-    };
-
-    return {
-      accessFlags,
-      tools,
-      activeTool,
-      setActiveTool,
-      setActiveHoverItemIndex,
-      hoveredTool,
-      activeHoverItemIndex,
-      showHelpToolTip,
-      clearToolTipTrigger,
-      createToolTipTrigger,
-      iconForTool,
-    };
-  },
+const clearToolTipTrigger = () => {
+  showHelpToolTip.value = false;
+  if (tooltipTrigger.value) {
+    window.clearTimeout(tooltipTrigger.value);
+  }
 };
 </script>
 

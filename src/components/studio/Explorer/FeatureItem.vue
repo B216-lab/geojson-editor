@@ -7,7 +7,7 @@
     <div class="icon" @dblclick.prevent="focusFeature">
       <Icon :icon="iconForShape(feature.geometry.type)" width="16" height="16" />
     </div>
-    <form @submit.prevent="$refs.featureNameInput.blur()" @dblclick="setEditable">
+    <form @submit.prevent="featureNameInput && featureNameInput.blur()" @dblclick="setEditable">
       <input type="text" name="featureName" ref="featureNameInput" v-model="featureName" :readonly="readonly" size="2"
         @blur="renameFeature" @focus="setEditable" />
       <input v-show="false" type="submit" />
@@ -18,125 +18,105 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { Icon } from "@iconify/vue";
 import { computed, ref, watch } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 import { FEATURE_TYPES } from '@/models/Feature.model';
 
-export default {
-  components: {
-    Icon,
+const props = defineProps({
+  feature: {
+    type: Object,
+    required: true,
   },
-  props: {
-    feature: {
-      type: Object,
-      required: true,
-    },
-    isHoveredFeature: {
-      type: Boolean,
-      default: false,
-    },
-    isSelectedFeature: {
-      type: Boolean,
-      default: false,
-    },
-    isEditable: {
-      type: Boolean,
-      default: false,
-    },
+  isHoveredFeature: {
+    type: Boolean,
+    default: false,
   },
-  setup(props) {
-    const iconForShape = (type) => {
-      switch (type) {
-        case FEATURE_TYPES.Polygon:
-        case FEATURE_TYPES.MultiPolygon:
-          return "mdi:shape-outline";
-        case FEATURE_TYPES.LineString:
-        case FEATURE_TYPES.MultiLineString:
-          return "mdi:vector-line";
-        case FEATURE_TYPES.Point:
-          return "mdi:map-marker-outline";
-        default:
-          return "mdi:shape-outline";
-      }
-    };
-
-    const readonly = ref(true);
-    const featureNameInput = ref(null);
-    const featureName = ref(props.feature.properties.name);
-    const isHidden = computed(() => props.feature.properties.isHidden);
-    const { actions } = useStoreModule("editor");
-    const setAsActiveFeature = (event) => {
-      const { metaKey, ctrlKey, shiftKey } = event;
-      if (shiftKey) {
-        // select range of listed features
-        actions.customSelectFeatureId({
-          featureId: props.feature.properties.id,
-          isMultiSelect: true,
-        });
-      } else if (metaKey || ctrlKey) {
-        // select / unselect current feature
-        actions.customSelectFeatureId({
-          featureId: props.feature.properties.id,
-          deselect: props.isSelectedFeature,
-          isMultiSelect: false,
-        });
-      } else {
-        // select only current feature
-        actions.setSelectedFeatureIds([props.feature.properties.id]);
-      }
-    };
-    const renameFeature = () => {
-      readonly.value = true;
-      if (featureName.value) {
-        actions.updateFeatureProperties({
-          featureId: props.feature.properties.id,
-          properties: { name: featureName.value },
-        });
-      } else {
-        featureName.value = props.feature.properties.name;
-      }
-    };
-
-    const toggleVisibility = () => {
-      actions.updateFeatureProperties({
-        featureId: props.feature.properties.id,
-        properties: { isHidden: !isHidden.value },
-      });
-    };
-
-    const focusFeature = () => {
-      actions.setFocusedFeatureId(props.feature.properties.id);
-    };
-
-    const setEditable = () => {
-      if (props.isEditable) {
-        readonly.value = false;
-      }
-    };
-
-    watch(readonly, (value) => {
-      if (!value) {
-        featureNameInput.value.focus();
-        featureNameInput.value.select();
-      }
-    });
-
-    return {
-      iconForShape,
-      readonly,
-      featureName,
-      renameFeature,
-      isHidden,
-      featureNameInput,
-      setAsActiveFeature,
-      toggleVisibility,
-      focusFeature,
-      setEditable,
-    };
+  isSelectedFeature: {
+    type: Boolean,
+    default: false,
   },
+  isEditable: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const iconForShape = (type) => {
+  switch (type) {
+    case FEATURE_TYPES.Polygon:
+    case FEATURE_TYPES.MultiPolygon:
+      return "mdi:shape-outline";
+    case FEATURE_TYPES.LineString:
+    case FEATURE_TYPES.MultiLineString:
+      return "mdi:vector-line";
+    case FEATURE_TYPES.Point:
+      return "mdi:map-marker-outline";
+    default:
+      return "mdi:shape-outline";
+  }
 };
+
+const readonly = ref(true);
+const featureNameInput = ref(null);
+const featureName = ref(props.feature.properties.name);
+const isHidden = computed(() => props.feature.properties.isHidden);
+const { actions } = useStoreModule("editor");
+
+const setAsActiveFeature = (event) => {
+  const { metaKey, ctrlKey, shiftKey } = event;
+  if (shiftKey) {
+    actions.customSelectFeatureId({
+      featureId: props.feature.properties.id,
+      isMultiSelect: true,
+    });
+  } else if (metaKey || ctrlKey) {
+    actions.customSelectFeatureId({
+      featureId: props.feature.properties.id,
+      deselect: props.isSelectedFeature,
+      isMultiSelect: false,
+    });
+  } else {
+    actions.setSelectedFeatureIds([props.feature.properties.id]);
+  }
+};
+
+const renameFeature = () => {
+  readonly.value = true;
+  if (featureName.value) {
+    actions.updateFeatureProperties({
+      featureId: props.feature.properties.id,
+      properties: { name: featureName.value },
+    });
+  } else {
+    featureName.value = props.feature.properties.name;
+  }
+};
+
+const toggleVisibility = () => {
+  actions.updateFeatureProperties({
+    featureId: props.feature.properties.id,
+    properties: { isHidden: !isHidden.value },
+  });
+};
+
+const focusFeature = () => {
+  actions.setFocusedFeatureId(props.feature.properties.id);
+};
+
+const setEditable = () => {
+  if (props.isEditable) {
+    readonly.value = false;
+  }
+};
+
+watch(readonly, (value) => {
+  if (!value) {
+    featureNameInput.value.focus();
+    featureNameInput.value.select();
+  }
+});
 </script>
 
 <style lang="scss" scoped>

@@ -12,48 +12,42 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { Icon } from "@iconify/vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 
-export default {
-  components: {
-    Icon,
+defineProps({
+  x: {
+    type: Number,
+    default: 0,
   },
-  props: {
-    x: {
-      type: Number,
-      default: 0,
-    },
-    y: {
-      type: Number,
-      default: 0,
-    },
-    features: {
-      type: Array,
-    },
+  y: {
+    type: Number,
+    default: 0,
   },
-  setup(props, { emit }) {
-    const options = [
-      {
-        id: "delete",
-        icon: "mdi:trash-can-outline",
-        name: "Delete",
-      },
-    ];
+  features: {
+    type: Array,
+  },
+});
 
-    const { actions } = useStoreModule("editor");
-    const selectOption = (itemId) => {
-      switch (itemId) {
-        case "delete":
-          actions.deleteSelectedFeatures();
-          break;
-      }
-      emit("close");
-    };
+const emit = defineEmits(["close"]);
 
-    return { options, selectOption };
+const options = [
+  {
+    id: "delete",
+    icon: "mdi:trash-can-outline",
+    name: "Delete",
   },
+];
+
+const { actions } = useStoreModule("editor");
+const selectOption = (itemId) => {
+  switch (itemId) {
+    case "delete":
+      actions.deleteSelectedFeatures();
+      break;
+  }
+  emit("close");
 };
 </script>
 

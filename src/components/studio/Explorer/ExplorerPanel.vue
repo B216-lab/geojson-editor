@@ -10,28 +10,9 @@
   </div>
 </template>
 
-<script>
-import { useStoreModule } from "@/composables/useStoreModule.js";
+<script setup>
 import { Icon } from "@iconify/vue";
-import { computed, defineComponent } from "vue";
 import FeatureList from "./FeatureList.vue";
-
-export default defineComponent({
-  components: {
-    Icon,
-    FeatureList,
-  },
-  setup() {
-    const UIStore = useStoreModule("UI");
-    const isShapesEditable = computed(
-      () => UIStore.getters.getAccessFlags.isShapesEditable
-    );
-
-    return {
-      isShapesEditable,
-    };
-  },
-});
 </script>
 
 <style lang="scss" scoped>

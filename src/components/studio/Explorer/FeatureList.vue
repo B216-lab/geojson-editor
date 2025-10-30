@@ -22,49 +22,33 @@
   </Teleport>
 </template>
 
-<script>
+<script setup>
 import { useStoreModule } from "@/composables/useStoreModule.js";
-import { computed, defineComponent, ref } from "vue";
+import { computed, ref } from "vue";
 import FeatureItem from "./FeatureItem.vue";
 import FeatureContextMenu from "./FeatureContextMenu.vue";
 
-export default defineComponent({
-  components: {
-    FeatureItem,
-    FeatureContextMenu,
-  },
-  setup() {
-    const { getters, actions } = useStoreModule("editor");
-    const UIStore = useStoreModule("UI");
-    const features = computed(() => getters.getFeatures);
-    const hoveredFeatureId = computed(() => getters.getHoveredFeatureId);
-    const featuresContextMenuData = ref(null);
+const { getters, actions } = useStoreModule("editor");
+const UIStore = useStoreModule("UI");
 
-    const isShapesEditable = computed(
-      () => UIStore.getters.getAccessFlags.isShapesEditable
-    );
+const features = computed(() => getters.getFeatures);
+const hoveredFeatureId = computed(() => getters.getHoveredFeatureId);
+const featuresContextMenuData = ref(null);
 
-    const showFeatureOptions = ($event, feature) => {
-      console.log($event, feature);
-      const { clientX, clientY } = $event;
-      if (!feature.isSelected) {
-        actions.setSelectedFeatureIds([feature.id]);
-      }
-      featuresContextMenuData.value = {
-        x: clientX,
-        y: clientY,
-      };
-    };
+const isShapesEditable = computed(
+  () => UIStore.getters.getAccessFlags.isShapesEditable
+);
 
-    return {
-      features,
-      hoveredFeatureId,
-      isShapesEditable,
-      showFeatureOptions,
-      featuresContextMenuData,
-    };
-  },
-});
+const showFeatureOptions = ($event, feature) => {
+  const { clientX, clientY } = $event;
+  if (!feature.isSelected) {
+    actions.setSelectedFeatureIds([feature.id]);
+  }
+  featuresContextMenuData.value = {
+    x: clientX,
+    y: clientY,
+  };
+};
 </script>
 
 <style lang="scss" scoped>
