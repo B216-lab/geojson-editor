@@ -19,7 +19,6 @@ import { computed, defineAsyncComponent, onBeforeMount, onBeforeUnmount, onMount
 import { useUIStore } from "@/stores/ui";
 import { useMapStore } from "@/stores/map";
 import { useEditorStore } from "@/stores/editor";
-import { useProjectsStore } from "@/stores/projects";
 import { useRoute } from "vue-router";
 
 const EditorView = defineAsyncComponent({
@@ -31,14 +30,14 @@ const studioLayoutRef = ref(null);
 const uiStore = useUIStore();
 const mapStore = useMapStore();
 const editorStore = useEditorStore();
-const projectsStore = useProjectsStore();
 const isLoading = ref(false);
 const route = useRoute();
 const isPreviewMode = computed(() => !!route.query?.preview);
 
 const initializeProject = async () => {
   isLoading.value = true;
-  await projectsStore.initializeProject();
+  // Initialize editor state with an empty map context
+  await editorStore.loadEditorData({ title: 'Untitled Map', features: {} });
   isLoading.value = false;
 };
 
