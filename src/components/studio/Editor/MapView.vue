@@ -20,7 +20,7 @@
     @onClickFitScreen="fitScreen" />
 </template>
 
-<script>
+<script setup>
 import { Map } from "mapbox-gl";
 import VDeckgl from "@/components/base/v-deckgl.vue";
 import { computed, onMounted, watch, ref, nextTick } from "vue";
@@ -31,213 +31,159 @@ import MapControls from "./MapControls.vue";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { FlyToInterpolator } from "@deck.gl/core";
 
-export default {
-  components: {
-    VDeckgl,
-    MapControls,
-  },
-  props: {
-    layers: {
-      type: Array,
-      default: () => [],
-    },
-    cursor: {
-      type: String,
-      default: "default",
-    },
-  },
-  emits: ["onClick", "onDrag", "onDragStart", "onDragEnd"],
-  setup() {
-    const { getters } = useStoreModule("map");
-    const { getters: editorGetters, actions } = useStoreModule("editor");
-    const UIStore = useStoreModule("UI");
-    const ACCESS_TOKEN = import.meta.env.VITE_APP_MAPBOX_TOKEN;
-    const activeMapStyleURL = computed(() => getters.getActiveMapStyleURL);
-    const showMapLabels = computed(() => getters.getShowMapLabels);
-    const focusedFeature = computed(() => editorGetters.getFocusedFeature);
-    const boundingBox = computed(() => editorGetters.getBoundingBox);
-    const setShowMapSearch = UIStore.actions.setShowMapSearch;
-    const deckContainerRef = ref(null);
-    const map = ref(null);
-    const fgmap = ref(null);
-    const viewState = ref({
-      latitude: 52.267329, longitude: 104.321593,
-      zoom: 14,
-      bearing: 0,
-      pitch: 0,
-    });
-    let baseMap = null;
-    let foregroundMap = null;
-    onMounted(async () => {
-      await nextTick();
-      baseMap = new Map({
-        accessToken: ACCESS_TOKEN,
-        container: map.value,
-        interactive: false,
-        language: 'ru',
-        style: activeMapStyleURL.value,
-        center: [viewState.value.longitude, viewState.value.latitude],
-        zoom: viewState.value.zoom,
-        pitch: viewState.value.pitch,
-        bearing: viewState.value.bearing,
-        preserveDrawingBuffer: true,
-      });
+const props = defineProps({
+  layers: { type: Array, default: () => [] },
+  cursor: { type: String, default: "default" },
+});
+defineEmits(["onClick", "onDrag", "onDragStart", "onDragEnd"]);
 
-      // remove all the map labels
-      baseMap.on("style.load", () => {
-        baseMap.style.stylesheet.layers.forEach((layer) => {
-          if (layer.type === "symbol") {
-            baseMap.removeLayer(layer.id);
-          }
-        });
-      });
+const { getters } = useStoreModule("map");
+const { getters: editorGetters, actions } = useStoreModule("editor");
+const UIStore = useStoreModule("UI");
+const ACCESS_TOKEN = import.meta.env.VITE_APP_MAPBOX_TOKEN;
+const activeMapStyleURL = computed(() => getters.getActiveMapStyleURL);
+const showMapLabels = computed(() => getters.getShowMapLabels);
+const focusedFeature = computed(() => editorGetters.getFocusedFeature);
+const boundingBox = computed(() => editorGetters.getBoundingBox);
+const setShowMapSearch = UIStore.actions.setShowMapSearch;
+const deckContainerRef = ref(null);
+const map = ref(null);
+const fgmap = ref(null);
+const viewState = ref({ latitude: 52.267329, longitude: 104.321593, zoom: 14, bearing: 0, pitch: 0 });
+let baseMap = null;
+let foregroundMap = null;
 
+onMounted(async () => {
+  await nextTick();
+  baseMap = new Map({
+    accessToken: ACCESS_TOKEN,
+    container: map.value,
+    interactive: false,
+    language: 'ru',
+    style: activeMapStyleURL.value,
+    center: [viewState.value.longitude, viewState.value.latitude],
+    zoom: viewState.value.zoom,
+    pitch: viewState.value.pitch,
+    bearing: viewState.value.bearing,
+    preserveDrawingBuffer: true,
+  });
 
-      foregroundMap = new Map({
-        accessToken: ACCESS_TOKEN,
-        container: fgmap.value,
-        interactive: false,
-        style: "mapbox://styles/haxzie/ckcd6vxu30fe01iqk51qaplby",
-        center: [viewState.value.longitude, viewState.value.latitude],
-        zoom: viewState.value.zoom,
-        pitch: viewState.value.pitch,
-        bearing: viewState.value.bearing,
-        preserveDrawingBuffer: true,
-      });
-
-      foregroundMap.on("style.load", () => {
-        if (boundingBox.value) {
-          console.log(`Bounding box`)
-          updateViewStateWithBoundingBox(boundingBox.value);
-        }
-      })
-    });
-
-    watch(focusedFeature, (feature) => {
-      if (feature) {
-        console.log(feature);
-        const { width, height } =
-          deckContainerRef.value.getBoundingClientRect();
-        const vs = new WebMercatorViewport({
-          ...viewState.value,
-          width,
-          height,
-        });
-
-        try {
-          const box = feature.bbox || (new Feature(feature).bbox);
-
-          const boundedViewState = vs.fitBounds([
-            [box[0], box[1]],
-            [box[2], box[3]],
-          ]);
-          let { latitude, longitude, zoom, bearing, pitch } = boundedViewState;
-          zoom =
-            feature.geometry.type === FEATURE_TYPES.Point ? zoom - 4 : zoom;
-          updateViewState({
-            latitude,
-            longitude,
-            zoom,
-            bearing,
-            pitch,
-            transitionDuration: 800,
-            transitionInterpolator: new FlyToInterpolator({ speed: 2 })
-          });
-        } catch (error) {
-          console.log(`Unable to set the bounding box`, feature);
-          console.error(error);
-        }
-        actions.setFocusedFeatureId(null);
+  baseMap.on("style.load", () => {
+    baseMap.style.stylesheet.layers.forEach((layer) => {
+      if (layer.type === "symbol") {
+        baseMap.removeLayer(layer.id);
       }
     });
-    const updateViewState = (_viewState) => {
-      baseMap.jumpTo({
-        center: [_viewState.longitude, _viewState.latitude],
-        zoom: _viewState.zoom,
-        bearing: _viewState.bearing,
-        pitch: _viewState.pitch,
-        essential: true,
-      });
+  });
 
-      foregroundMap.jumpTo({
-        center: [_viewState.longitude, _viewState.latitude],
-        zoom: _viewState.zoom,
-        bearing: _viewState.bearing,
-        pitch: _viewState.pitch,
-        essential: true,
-      });
-      viewState.value = _viewState;
-    };
+  foregroundMap = new Map({
+    accessToken: ACCESS_TOKEN,
+    container: fgmap.value,
+    interactive: false,
+    style: "mapbox://styles/haxzie/ckcd6vxu30fe01iqk51qaplby",
+    center: [viewState.value.longitude, viewState.value.latitude],
+    zoom: viewState.value.zoom,
+    pitch: viewState.value.pitch,
+    bearing: viewState.value.bearing,
+    preserveDrawingBuffer: true,
+  });
 
-    const zoomIn = () => {
-      updateViewState({
-        ...viewState.value,
-        zoom: Math.min(viewState.value.zoom + 1, 20),
-      });
-    };
-
-    const zoomOut = () => {
-      updateViewState({
-        ...viewState.value,
-        zoom: Math.max(viewState.value.zoom - 1, 1),
-      });
-    };
-
-    const fitScreen = () => {
-      actions.updateBoundingBox();
-    };
-
-    watch(activeMapStyleURL, () => {
-      if (baseMap) {
-        baseMap.setStyle(activeMapStyleURL.value);
-      }
-    });
-
-    const updateViewStateWithBoundingBox = (bbox) => {
-      if (bbox) {
-        const { width, height } =
-          deckContainerRef.value.getBoundingClientRect();
-        const vs = new WebMercatorViewport({
-          ...viewState.value,
-          width,
-          height,
-        });
-        try {
-          const boundedViewState = vs.fitBounds(bbox);
-          let { latitude, longitude, zoom, bearing, pitch } = boundedViewState;
-          updateViewState({
-            latitude,
-            longitude,
-            zoom: zoom > 19 ? 19 : zoom,
-            bearing,
-            pitch,
-            transitionDuration: 800,
-            transitionInterpolator: new FlyToInterpolator({ speed: 2 })
-          });
-        } catch (error) {
-          console.error(`We fucked up`, error);
-        }
-      }
+  foregroundMap.on("style.load", () => {
+    if (boundingBox.value) {
+      console.log(`Bounding box`)
+      updateViewStateWithBoundingBox(boundingBox.value);
     }
-    watch(boundingBox, (bbox) => {
-      updateViewStateWithBoundingBox(bbox);
-    });
+  })
+});
 
-    return {
-      viewState,
-      updateViewState,
-      showMapLabels,
-      deckContainerRef,
-      map,
-      fgmap,
-      MapController,
-      zoomIn,
-      zoomOut,
-      fitScreen,
-      setShowMapSearch,
-    };
-  },
+watch(focusedFeature, (feature) => {
+  if (feature) {
+    console.log(feature);
+    const { width, height } = deckContainerRef.value.getBoundingClientRect();
+    const vs = new WebMercatorViewport({ ...viewState.value, width, height });
+
+    try {
+      const box = feature.bbox || (new Feature(feature).bbox);
+      const boundedViewState = vs.fitBounds([[box[0], box[1]], [box[2], box[3]]]);
+      let { latitude, longitude, zoom, bearing, pitch } = boundedViewState;
+      zoom = feature.geometry.type === FEATURE_TYPES.Point ? zoom - 4 : zoom;
+      updateViewState({
+        latitude,
+        longitude,
+        zoom,
+        bearing,
+        pitch,
+        transitionDuration: 800,
+        transitionInterpolator: new FlyToInterpolator({ speed: 2 })
+      });
+    } catch (error) {
+      console.log(`Unable to set the bounding box`, feature);
+      console.error(error);
+    }
+    actions.setFocusedFeatureId(null);
+  }
+});
+
+const updateViewState = (_viewState) => {
+  baseMap.jumpTo({
+    center: [_viewState.longitude, _viewState.latitude],
+    zoom: _viewState.zoom,
+    bearing: _viewState.bearing,
+    pitch: _viewState.pitch,
+    essential: true,
+  });
+
+  foregroundMap.jumpTo({
+    center: [_viewState.longitude, _viewState.latitude],
+    zoom: _viewState.zoom,
+    bearing: _viewState.bearing,
+    pitch: _viewState.pitch,
+    essential: true,
+  });
+  viewState.value = _viewState;
 };
+
+const zoomIn = () => {
+  updateViewState({ ...viewState.value, zoom: Math.min(viewState.value.zoom + 1, 20) });
+};
+
+const zoomOut = () => {
+  updateViewState({ ...viewState.value, zoom: Math.max(viewState.value.zoom - 1, 1) });
+};
+
+const fitScreen = () => { actions.updateBoundingBox(); };
+
+watch(activeMapStyleURL, () => {
+  if (baseMap) {
+    baseMap.setStyle(activeMapStyleURL.value);
+  }
+});
+
+const updateViewStateWithBoundingBox = (bbox) => {
+  if (bbox) {
+    const { width, height } = deckContainerRef.value.getBoundingClientRect();
+    const vs = new WebMercatorViewport({ ...viewState.value, width, height });
+    try {
+      const boundedViewState = vs.fitBounds(bbox);
+      let { latitude, longitude, zoom, bearing, pitch } = boundedViewState;
+      updateViewState({
+        latitude,
+        longitude,
+        zoom: zoom > 19 ? 19 : zoom,
+        bearing,
+        pitch,
+        transitionDuration: 800,
+        transitionInterpolator: new FlyToInterpolator({ speed: 2 })
+      });
+    } catch (error) {
+      console.error(`We fucked up`, error);
+    }
+  }
+}
+watch(boundingBox, (bbox) => { updateViewStateWithBoundingBox(bbox); });
+
+// expose to template
+defineExpose({ viewState, updateViewState, showMapLabels, deckContainerRef, map, fgmap, MapController, zoomIn, zoomOut, fitScreen, setShowMapSearch });
 </script>
 
 <style lang="scss" scoped>

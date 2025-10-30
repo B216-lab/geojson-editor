@@ -18,157 +18,111 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { Icon } from "@iconify/vue";
-
 import { computed } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 import { FEATURE_TYPES } from "@/models/Feature.model";
 import { EDITING_MODE } from "@/stores/editor";
 
-export default {
-  components: {
-    Icon,
-  },
-  props: {
-    x: {
-      type: Number,
-      default: 0,
-    },
-    y: {
-      type: Number,
-      default: 0,
-    },
-    latitude: {
-      type: Number,
-      default: 0,
-    },
-    longitude: {
-      type: Number,
-      default: 0,
-    },
-    feature: {
-      type: Object,
-    },
-  },
-  setup(props, { emit }) {
-    const iconForShape = (type) => {
-      switch (type) {
-        case FEATURE_TYPES.Polygon:
-        case FEATURE_TYPES.MultiPolygon:
-          return "mdi:shape-outline";
-        case FEATURE_TYPES.LineString:
-        case FEATURE_TYPES.MultiLineString:
-          return "mdi:vector-line";
-        case FEATURE_TYPES.Point:
-          return "mdi:map-marker-outline";
-        default:
-          return "mdi:shape-outline";
-      }
-    };
+const props = defineProps({
+  x: { type: Number, default: 0 },
+  y: { type: Number, default: 0 },
+  latitude: { type: Number, default: 0 },
+  longitude: { type: Number, default: 0 },
+  feature: { type: Object },
+});
+const emit = defineEmits(["close"]);
 
-    const UIStore = useStoreModule("UI");
-    const MapStore = useStoreModule("map");
-    const accessFlags = computed(() => UIStore.getters.getAccessFlags);
-    const options = computed(() => [
-      ...(props.feature && accessFlags.value.isShapesEditable
+const iconForShape = (type) => {
+  switch (type) {
+    case FEATURE_TYPES.Polygon:
+    case FEATURE_TYPES.MultiPolygon:
+      return "mdi:shape-outline";
+    case FEATURE_TYPES.LineString:
+    case FEATURE_TYPES.MultiLineString:
+      return "mdi:vector-line";
+    case FEATURE_TYPES.Point:
+      return "mdi:map-marker-outline";
+    default:
+      return "mdi:shape-outline";
+  }
+};
+
+const UIStore = useStoreModule("UI");
+const MapStore = useStoreModule("map");
+const accessFlags = computed(() => UIStore.getters.getAccessFlags);
+const options = computed(() => [
+  ...(props.feature && accessFlags.value.isShapesEditable
+    ? [
+      ...(props.feature.geometry.type !== FEATURE_TYPES.Point
         ? [
-          ...(props.feature.geometry.type !== FEATURE_TYPES.Point
-            ? [
-              {
-                id: "modify",
-                icon: "mdi:vector-polyline-edit",
-                name: "Modify",
-              },
-              {
-                id: "transform",
-                icon: "mdi:axis-arrow",
-                name: "Transform",
-              },
-            ]
-            : []),
-          {
-            id: "delete",
-            icon: "mdi:trash-can-outline",
-            name: "Delete",
-          },
+          { id: "modify", icon: "mdi:vector-polyline-edit", name: "Modify" },
+          { id: "transform", icon: "mdi:axis-arrow", name: "Transform" },
         ]
         : []),
-      ...(props.latitude && props.longitude
-        ? [
-          // {
-          //   id: "searchArea",
-          //   icon: "mdi:magnify",
-          //   name: "Search this area",
-          // },
-          {
-            id: "copycords",
-            icon: "mdi:content-copy",
-            name: "Copy Coordinates",
-          },
-          {
-            id: "openIn2gis",
-            icon: "lets-icons:map-fill",
-            name: "Open in 2GIS",
-            link: `https://2gis.ru/map/${props.latitude},${props.longitude}`,
-          },
-        ]
-        : []),
-    ]);
+      { id: "delete", icon: "mdi:trash-can-outline", name: "Delete" },
+    ]
+    : []),
+  ...(props.latitude && props.longitude
+    ? [
+      { id: "copycords", icon: "mdi:content-copy", name: "Copy Coordinates" },
+      {
+        id: "openIn2gis",
+        icon: "lets-icons:map-fill",
+        name: "Open in 2GIS",
+        link: `https://2gis.ru/map/${props.latitude},${props.longitude}`,
+      },
+    ]
+    : []),
+]);
 
-    const copyCoordinates = () => {
-      navigator?.clipboard?.writeText(`${props.latitude}, ${props.longitude}`);
-    };
+const copyCoordinates = () => {
+  navigator?.clipboard?.writeText(`${props.latitude}, ${props.longitude}`);
+};
 
-    const openIn2gis = () => {
-      // Build a 2GIS URL matching the example format for coordinates:
-      // https://2gis.ru/geo/geo_id/longitude%2Clatitude?m=longitude%2Clatitude/zoom
-      // Since we might not have a geo_id or zoom, use 0 for geo_id and 14 for default zoom.
-      const zoom = 14;
-      const lon = props.longitude;
-      const lat = props.latitude;
-      const coordParam = `${lon}%2C${lat}`;
-      //                 https://2gis.ru/irkutsk/geo/70030076318974799/104.290351%2C52.265989?m=104.288763%2C52.264886%2F14
-      const url = `https://2gis.ru/irkutsk/geo/70030076318974799/${coordParam}?m=${coordParam}%2F${zoom}`;
-      window.open(url, '_blank');
-      return;
-    };
-    const { actions } = useStoreModule("editor");
-    const selectOption = (itemId) => {
-      switch (itemId) {
-        case "modify":
-          actions.setActiveEditMode({
-            featureId: props.feature?.properties?.id,
-            mode: EDITING_MODE.modify.id,
-          });
-          break;
-        case "transform":
-          actions.setActiveEditMode({
-            featureId: props.feature?.properties?.id,
-            mode: EDITING_MODE.transform.id,
-          });
-          break;
-        case "delete":
-          actions.deleteFeatureById({
-            featureId: props.feature?.properties?.id,
-          });
-          break;
-        case "searchArea":
-          MapStore.actions.setSearchLocation([props.latitude, props.longitude]);
-          UIStore.actions.setShowMapSearch(true);
-          break;
-        case "copycords":
-          copyCoordinates();
-          break;
-        case "openIn2gis":
-          openIn2gis();
-          break;
-      }
-      emit("close");
-    };
+const openIn2gis = () => {
+  const zoom = 14;
+  const lon = props.longitude;
+  const lat = props.latitude;
+  const coordParam = `${lon}%2C${lat}`;
+  const url = `https://2gis.ru/irkutsk/geo/70030076318974799/${coordParam}?m=${coordParam}%2F${zoom}`;
+  window.open(url, '_blank');
+  return;
+};
 
-    return { iconForShape, options, selectOption };
-  },
+const { actions } = useStoreModule("editor");
+const selectOption = (itemId) => {
+  switch (itemId) {
+    case "modify":
+      actions.setActiveEditMode({
+        featureId: props.feature?.properties?.id,
+        mode: EDITING_MODE.modify.id,
+      });
+      break;
+    case "transform":
+      actions.setActiveEditMode({
+        featureId: props.feature?.properties?.id,
+        mode: EDITING_MODE.transform.id,
+      });
+      break;
+    case "delete":
+      actions.deleteFeatureById({
+        featureId: props.feature?.properties?.id,
+      });
+      break;
+    case "searchArea":
+      MapStore.actions.setSearchLocation([props.latitude, props.longitude]);
+      UIStore.actions.setShowMapSearch(true);
+      break;
+    case "copycords":
+      copyCoordinates();
+      break;
+    case "openIn2gis":
+      openIn2gis();
+      break;
+  }
+  emit("close");
 };
 </script>
 

@@ -18,92 +18,64 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { Icon } from "@iconify/vue";
 import { areaFormatter, distanceFormatter } from "@/utils/formatter";
 import { DEFAULT_PROPERTIES, FEATURE_TYPES } from "@/models/Feature.model";
 import { computed } from "vue";
 
-export default {
-  components: {
-    Icon,
-  },
-  props: {
-    x: {
-      type: Number,
-      default: 0,
-    },
-    y: {
-      type: Number,
-      default: 0,
-    },
-    feature: {
-      type: Object,
-    },
-    showProperties: {
-      type: Boolean,
-    },
-  },
-  setup(props) {
-    const iconForShape = (type) => {
-      switch (type) {
-        case FEATURE_TYPES.Polygon:
-        case FEATURE_TYPES.MultiPolygon:
-          return "mdi:shape-outline";
-        case FEATURE_TYPES.LineString:
-        case FEATURE_TYPES.MultiLineString:
-          return "mdi:vector-line";
-        case FEATURE_TYPES.Point:
-          return "mdi:map-marker-outline";
-        default:
-          return "mdi:shape-outline";
-      }
-    };
+const props = defineProps({
+  x: { type: Number, default: 0 },
+  y: { type: Number, default: 0 },
+  feature: { type: Object },
+  showProperties: { type: Boolean },
+});
 
-    const customProperties = computed(() => {
-      const all = props.feature?.properties || {};
-      const exclude = new Set(DEFAULT_PROPERTIES);
-      return Object.keys(all).reduce((acc, key) => {
-        if (!exclude.has(key)) acc[key] = all[key];
-        return acc;
-      }, {});
-    });
-
-    const meta = computed(() => {
-      if (!props.feature) return {};
-      const { area, perimeter, distance, pointRadius, radiusScale } =
-        props.feature.properties;
-
-      const rawMeta = {
-        area: area && areaFormatter(area),
-        distance: distance && distanceFormatter(distance),
-        perimeter: perimeter && distanceFormatter(perimeter),
-        radius: pointRadius && `${pointRadius} ${radiusScale}`,
-        ...Object.keys(customProperties.value)
-          .slice(0, 3)
-          .reduce(
-            (result, key) => ({
-              ...result,
-              [key]: customProperties.value[key],
-            }),
-            {}
-          ),
-      };
-      const meta = Object.keys(rawMeta).reduce((result, key) => {
-        if (rawMeta[key]) {
-          result.push({
-            name: key,
-            value: rawMeta[key],
-          });
-        }
-        return result;
-      }, []);
-      return meta;
-    });
-
-    return { iconForShape, meta };
-  },
+const iconForShape = (type) => {
+  switch (type) {
+    case FEATURE_TYPES.Polygon:
+    case FEATURE_TYPES.MultiPolygon:
+      return "mdi:shape-outline";
+    case FEATURE_TYPES.LineString:
+    case FEATURE_TYPES.MultiLineString:
+      return "mdi:vector-line";
+    case FEATURE_TYPES.Point:
+      return "mdi:map-marker-outline";
+    default:
+      return "mdi:shape-outline";
+  }
 };
+
+const customProperties = computed(() => {
+  const all = props.feature?.properties || {};
+  const exclude = new Set(DEFAULT_PROPERTIES);
+  return Object.keys(all).reduce((acc, key) => {
+    if (!exclude.has(key)) acc[key] = all[key];
+    return acc;
+  }, {});
+});
+
+const meta = computed(() => {
+  if (!props.feature) return {};
+  const { area, perimeter, distance, pointRadius, radiusScale } = props.feature.properties;
+
+  const rawMeta = {
+    area: area && areaFormatter(area),
+    distance: distance && distanceFormatter(distance),
+    perimeter: perimeter && distanceFormatter(perimeter),
+    radius: pointRadius && `${pointRadius} ${radiusScale}`,
+    ...Object.keys(customProperties.value)
+      .slice(0, 3)
+      .reduce((result, key) => ({ ...result, [key]: customProperties.value[key] }), {}),
+  };
+  const meta = Object.keys(rawMeta).reduce((result, key) => {
+    if (rawMeta[key]) {
+      result.push({ name: key, value: rawMeta[key] });
+    }
+    return result;
+  }, []);
+  return meta;
+});
 </script>
 
 <style lang="scss" scoped>

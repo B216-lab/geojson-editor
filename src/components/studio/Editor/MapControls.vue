@@ -21,14 +21,10 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { Icon } from "@iconify/vue";
 
-export default {
-  components: {
-    Icon
-  },
-};
+defineEmits(["onClickSearch", "onClickZoomIn", "onClickZoomOut", "onClickFitScreen"]);
 </script>
 
 <style lang="scss" scoped>
