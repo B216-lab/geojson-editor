@@ -1,13 +1,18 @@
 <template>
-  <button :class="[
-    'v-button',
-    { small, rounded, danger },
-    theme,
-    { disabled: disabled || isLoading },
-  ]" :type="type" @click="$emit('click')">
+  <button
+    :class="[
+      'v-button',
+      { small, rounded, danger },
+      theme,
+      { disabled: disabled || isLoading },
+    ]"
+    :type="type"
+    @click="$emit('click')"
+  >
     <div :class="['button-contents', { hidden: isLoading }]">
       <slot name="iconLeft"></slot>
-      <span>{{ text }}
+      <span
+        >{{ text }}
         <slot name="iconRight"></slot>
       </span>
     </div>
@@ -16,7 +21,7 @@
 
 <script setup lang="ts">
 defineProps<{
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   text?: string;
   theme?: string;
   isLoading?: boolean;
@@ -26,8 +31,8 @@ defineProps<{
   iconRight?: string;
   rounded?: boolean;
   danger?: boolean;
-}>()
-defineEmits<{ (e: 'click'): void }>()
+}>();
+defineEmits<{ (e: "click"): void }>();
 </script>
 
 <style lang="scss" scoped>

@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ small?: boolean; xs?: boolean }>()
+defineProps<{ small?: boolean; xs?: boolean }>();
 </script>
 
 <style lang="scss" scoped>

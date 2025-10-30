@@ -3,14 +3,29 @@
     <div class="dropdown-select" @click="openDropDownOptions">
       <span :class="[{ placeholder: !selectedItem }]">{{
         selectedItem && selectedItem.name ? selectedItem.name : placeholder
-        }}</span>
-      <Icon icon="mdi:chevron-down" :class="['icon', { rotate: showDropDownOptions }]" width="18" height="18" />
+      }}</span>
+      <Icon
+        icon="mdi:chevron-down"
+        :class="['icon', { rotate: showDropDownOptions }]"
+        width="18"
+        height="18"
+      />
     </div>
-    <div v-if="showDropDownOptions" class="dropdown-options" v-click-away="() => {
-        showDropDownOptions = false;
-      }
-      ">
-      <div v-for="(item, index) in getOptions" :key="`${index}_${item.id}`" class="item" @click="selectItem(item.id)">
+    <div
+      v-if="showDropDownOptions"
+      class="dropdown-options"
+      v-click-away="
+        () => {
+          showDropDownOptions = false;
+        }
+      "
+    >
+      <div
+        v-for="(item, index) in getOptions"
+        :key="`${index}_${item.id}`"
+        class="item"
+        @click="selectItem(item.id)"
+      >
         <span>{{ item.name }}</span>
       </div>
     </div>

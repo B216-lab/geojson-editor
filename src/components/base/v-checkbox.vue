@@ -1,7 +1,14 @@
 <template>
   <div class="v-checkbox" @click="$emit('update:modelValue', !modelValue)">
-    <Icon :icon="modelValue ? 'mdi:checkbox-marked-outline' : 'mdi:checkbox-blank-outline'" :width="size"
-      :height="size" />
+    <Icon
+      :icon="
+        modelValue
+          ? 'mdi:checkbox-marked-outline'
+          : 'mdi:checkbox-blank-outline'
+      "
+      :width="size"
+      :height="size"
+    />
     <span class="checkbox-label" v-if="label">{{ label }}</span>
   </div>
 </template>
@@ -13,8 +20,8 @@ defineProps<{
   modelValue?: boolean;
   label?: string;
   size?: string | number;
-}>()
-defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()
+}>();
+defineEmits<{ (e: "update:modelValue", v: boolean): void }>();
 </script>
 
 <style lang="scss" scoped>

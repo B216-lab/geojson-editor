@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ title?: string | null; bold?: boolean }>()
+defineProps<{ title?: string | null; bold?: boolean }>();
 </script>
 
 <style lang="scss" scoped>

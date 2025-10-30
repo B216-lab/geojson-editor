@@ -177,7 +177,11 @@ export default {
     <slot name="background"></slot>
     <!-- Normal slots, which will always be displayed on the background of the visualization/deck instance -->
     <slot></slot>
-    <canvas id="deck-canvas" ref="canvas" @contextmenu="handleContextMenu"></canvas>
+    <canvas
+      id="deck-canvas"
+      ref="canvas"
+      @contextmenu="handleContextMenu"
+    ></canvas>
     <!-- To be displayed on the foreground of the visualization/deck instance -->
     <slot name="foreground"></slot>
   </div>

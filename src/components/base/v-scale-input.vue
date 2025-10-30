@@ -3,9 +3,21 @@
     <div class="icon">
       <Icon :icon="iconName" width="18" height="18" />
     </div>
-    <v-dropdown :value="scale" :options="scaleOptions" @select="updateScale" width="100px" />
-    <input ref="widthInput" type="text" name="widthInput" :value="value" class="width-input" @blur="updateLineWidth"
-      placeholder="0" />
+    <v-dropdown
+      :value="scale"
+      :options="scaleOptions"
+      @select="updateScale"
+      width="100px"
+    />
+    <input
+      ref="widthInput"
+      type="text"
+      name="widthInput"
+      :value="value"
+      class="width-input"
+      @blur="updateLineWidth"
+      placeholder="0"
+    />
     <!-- <div class="slider">
       <slider v-model="width" color="var(--color-primary)" track-color="var(--color-secondary-light)" :tooltip="false"
         :max="1000" />

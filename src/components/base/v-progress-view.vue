@@ -1,11 +1,14 @@
 <template>
-  <div class="progress-view glow-shadow" :style="{
-    top: top ? `${top}px` : 0,
-  }"></div>
+  <div
+    class="progress-view glow-shadow"
+    :style="{
+      top: top ? `${top}px` : 0,
+    }"
+  ></div>
 </template>
 
 <script setup lang="ts">
-defineProps<{ top?: number }>()
+defineProps<{ top?: number }>();
 </script>
 
 <style lang="scss" scoped>
@@ -17,10 +20,12 @@ defineProps<{ top?: number }>()
   min-height: 2px;
   max-height: 2px;
   height: 2px;
-  background: repeating-linear-gradient(to right,
-      var(--color-primary-light) 0%,
-      var(--color-primary-light) 50%,
-      var(--color-primary) 100%);
+  background: repeating-linear-gradient(
+    to right,
+    var(--color-primary-light) 0%,
+    var(--color-primary-light) 50%,
+    var(--color-primary) 100%
+  );
   background-size: 200% auto;
   background-position: 0 100%;
   animation: gradient 1.5s infinite;
