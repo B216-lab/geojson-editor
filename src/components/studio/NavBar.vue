@@ -46,9 +46,11 @@ export default {
         case "select":
           return "mdi:cursor-default-outline";
         case "polygon":
+          return "mdi:shape-polygon-plus";
         case "rectangle":
+          return "mdi:rectangle-outline";
         case "ellipse":
-          return "mdi:shape-outline";
+          return "mdi:ellipse-outline";
         case "line":
           return "mdi:vector-line";
         case "point":
@@ -102,10 +104,8 @@ export default {
 
 <style lang="scss" scoped>
 .nav-bar {
-  display: grid;
   height: 50px;
   background: var(--color-dark-background);
-  grid-template-columns: 270px 1fr 270px;
   color: var(--color-secondary);
 
   .header {
@@ -114,19 +114,6 @@ export default {
     align-items: center;
     justify-content: flex-start;
     padding: 5px 5px 5px 10px;
-
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 5px 5px 5px 0;
-      color: var(--color-secondary);
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
-
   }
 
   .tool-bar {

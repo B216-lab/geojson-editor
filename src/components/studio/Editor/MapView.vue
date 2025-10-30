@@ -23,7 +23,7 @@
 <script>
 import { Map } from "mapbox-gl";
 import VDeckgl from "@/components/base/v-deckgl.vue";
-import { computed, onMounted, watch, ref } from "vue";
+import { computed, onMounted, watch, ref, nextTick } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
 import { WebMercatorViewport, MapController } from "@deck.gl/core";
 import Feature, { FEATURE_TYPES } from "@/models/Feature.model";
@@ -69,7 +69,8 @@ export default {
     });
     let baseMap = null;
     let foregroundMap = null;
-    onMounted(() => {
+    onMounted(async () => {
+      await nextTick();
       baseMap = new Map({
         accessToken: ACCESS_TOKEN,
         container: map.value,

@@ -5,10 +5,6 @@
         <Icon icon="mdi:layers-outline" class="icon" width="18" height="18" />
         <span>Features</span>
       </h4>
-      <button class="import-button" @click="showImportModal">
-        <Icon icon="mdi:plus" class="icon" width="18" height="18" />
-        Import
-      </button>
     </div>
     <feature-list />
   </div>
@@ -31,13 +27,8 @@ export default defineComponent({
       () => UIStore.getters.getAccessFlags.isShapesEditable
     );
 
-    const showImportModal = () => {
-      UIStore.actions.setShowImportModal(true);
-    }
-
     return {
       isShapesEditable,
-      showImportModal
     };
   },
 });
@@ -71,31 +62,6 @@ export default defineComponent({
         margin-left: 10px;
         color: currentColor;
         font-weight: bold;
-      }
-    }
-
-    .import-button {
-      display: flex;
-      align-items: center;
-      border: 0;
-      height: auto;
-      background: transparent;
-      padding: 7px 10px !important;
-      font-weight: 500;
-      border-radius: 3px;
-      color: var(--font-color-light);
-
-      // opacity: 0.5;
-
-      .icon {
-        margin-right: 5px;
-      }
-
-      &:hover {
-        color: var(--font-color);
-        cursor: pointer;
-        opacity: 1;
-        // background: var(--color-secondary-light);
       }
     }
   }

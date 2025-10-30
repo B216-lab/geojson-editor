@@ -6,17 +6,17 @@ import { defineStore } from 'pinia'
 export const useUIStore = defineStore('UI', {
     state: () => ({
         // комментарии: состояние UI
-        showImportModal: false,
-        showMapSearch: false,
+        showImportModal: true,
+        showMapSearch: true,
         accessFlags: {
-            isShapesEditable: false,
-            isMapEditable: false,
-            showTools: false,
-            showLayers: false,
-            showShareOptions: false,
+            isShapesEditable: true,
+            isMapEditable: true,
+            showTools: true,
+            showLayers: true,
+            showShareOptions: true,
             showExportOptions: true,
-            canDeleteProject: false,
-            canChangeProjectName: false,
+            canDeleteProject: true,
+            canChangeProjectName: true,
         } as Record<string, boolean>,
     }),
     getters: {
