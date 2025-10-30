@@ -249,6 +249,11 @@ watch(activeEditMode, (value) => {
 watch(tempGeoJson, () => { createLayers(); });
 watch(temporaryMapMarker, () => createLayers());
 watch(getUseExactDimensions, () => { createLayers(); });
+watch(hoveredFeatureId, (val) => {
+  if (!val) {
+    popupData.value = null;
+  }
+});
 
 onMounted(() => {
   createLayers();
