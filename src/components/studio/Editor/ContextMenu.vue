@@ -96,15 +96,21 @@ export default {
         : []),
       ...(props.latitude && props.longitude
         ? [
-          {
-            id: "searchArea",
-            icon: "mdi:magnify",
-            name: "Search this area",
-          },
+          // {
+          //   id: "searchArea",
+          //   icon: "mdi:magnify",
+          //   name: "Search this area",
+          // },
           {
             id: "copycords",
             icon: "mdi:content-copy",
             name: "Copy Coordinates",
+          },
+          {
+            id: "openIn2gis",
+            icon: "lets-icons:map-fill",
+            name: "Open in 2GIS",
+            link: `https://2gis.ru/map/${props.latitude},${props.longitude}`,
           },
         ]
         : []),
@@ -112,6 +118,20 @@ export default {
 
     const copyCoordinates = () => {
       navigator?.clipboard?.writeText(`${props.latitude}, ${props.longitude}`);
+    };
+
+    const openIn2gis = () => {
+      // Build a 2GIS URL matching the example format for coordinates:
+      // https://2gis.ru/geo/geo_id/longitude%2Clatitude?m=longitude%2Clatitude/zoom
+      // Since we might not have a geo_id or zoom, use 0 for geo_id and 14 for default zoom.
+      const zoom = 14;
+      const lon = props.longitude;
+      const lat = props.latitude;
+      const coordParam = `${lon}%2C${lat}`;
+      //                 https://2gis.ru/irkutsk/geo/70030076318974799/104.290351%2C52.265989?m=104.288763%2C52.264886%2F14
+      const url = `https://2gis.ru/irkutsk/geo/70030076318974799/${coordParam}?m=${coordParam}%2F${zoom}`;
+      window.open(url, '_blank');
+      return;
     };
     const { actions } = useStoreModule("editor");
     const selectOption = (itemId) => {
@@ -139,6 +159,9 @@ export default {
           break;
         case "copycords":
           copyCoordinates();
+          break;
+        case "openIn2gis":
+          openIn2gis();
           break;
       }
       emit("close");

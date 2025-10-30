@@ -1,10 +1,10 @@
 <template>
   <div class="map-controls">
-    <div class="control-wrapper">
+    <!-- <div class="control-wrapper">
       <div class="icon-button" role="button" @click="$emit('onClickSearch')">
         <Icon icon="mdi:magnify" class="icon" width="20" height="20" />
       </div>
-    </div>
+    </div> -->
     <div class="control-wrapper">
       <div class="icon-button" role="button" @click="$emit('onClickZoomIn')">
         <Icon icon="mdi:plus" class="icon" width="20" height="20" />
