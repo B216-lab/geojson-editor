@@ -253,38 +253,6 @@ export const useEditorStore = defineStore('editor', {
                 console.error(e)
             }
         },
-        async saveAsGeoJson() {
-            const geo = JSON.parse(JSON.stringify({ ...(this.getGeoJson as any) }))
-            const blob = new Blob([JSON.stringify(geo, null, 2)], { type: 'application/json' })
-            const url = URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.href = url
-            a.download = 'mapster.geojson'
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
-            URL.revokeObjectURL(url)
-        },
-        async saveAsKML() {
-            console.warn('saveAsKML: not implemented')
-        },
-        async loadGeoJSONFile(file: File) {
-            try {
-                const text = await file.text()
-                const parsed = JSON.parse(text)
-                const features = (parsed?.features || []).map((f: any) => new (FeatureModel as any)(f))
-                this.addGeoJsonFeatures({ features, cascadeStyles: false, shouldUpdateBBOX: true })
-            } catch (e) {
-                console.error(e)
-            }
-        },
-        async loadCSVFileMetaData(_: File) {
-            console.warn('loadCSVFileMetaData: not implemented')
-            return { error: true }
-        },
-        async loadCSVFile(_: { file: File; latitudeColumn: string; longitudeColumn: string; nameColumn?: string }) {
-            console.warn('loadCSVFile: not implemented')
-        },
         async loadEditorData({ title, features }: { title: string; features: Record<string, any> }) {
             this.setFilename(title)
             this.setFeatures({ features: features || {}, featureIds: (features && Object.keys(features).reverse()) || [] })

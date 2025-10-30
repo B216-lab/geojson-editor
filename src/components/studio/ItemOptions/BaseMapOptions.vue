@@ -37,13 +37,6 @@
       </div>
     </v-section>
     <v-section title="Visualization">
-      <!-- <div class="item-row">
-        <VCheckBox
-          :modelValue="getUseExactDimensions"
-          @update:modelValue="(value) => setUseExactDimensions(value)"
-          label="Preserve dimensions on zoom"
-        />
-      </div> -->
       <div class="item-row">
         <VCheckBox :modelValue="getShowPropertiesPopup" @update:modelValue="(value) => setShowPropertiesPopup(value)"
           label="Show Properties on Hover" />

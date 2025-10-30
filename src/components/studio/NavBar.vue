@@ -29,21 +29,11 @@
       </div>
       <div v-else class="view-options"></div>
     </div>
-    <div class="map-options">
-      <button class="btn-download" @click="toggleDownloadOptions">
-        <Icon icon="mdi:download" width="18" height="18" />
-        Export
-        <Icon icon="mdi:chevron-down" width="14" height="14" />
-      </button>
-      <DownloadOptions v-if="showDownloadOptions" @close="showDownloadOptions = false" @saveLocal="saveFile"
-        @saveGeoJson="saveGeoJson" @saveKML="saveKML" @saveScreenshot="saveScreenshot" />
-    </div>
   </div>
 </template>
 
 <script>
 import { Icon } from "@iconify/vue";
-import DownloadOptions from "@/components/studio/Menus/DownloadOptions.vue";
 import { MAP_TOOLS } from "@/stores/editor";
 import { computed, ref, watch } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
@@ -52,7 +42,6 @@ import { createRoute } from "@/router";
 export default {
   components: {
     Icon,
-    DownloadOptions,
   },
   setup() {
     const { getters, actions } = useStoreModule("editor");
@@ -79,15 +68,11 @@ export default {
           return "mdi:shape-outline";
       }
     };
-    const saveFile = actions.saveAsGeoJson;
-    const saveGeoJson = actions.saveAsGeoJson;
-    const saveKML = actions.saveAsKML;
     const activeHoverItemIndex = ref(0);
     const hoveredTool = computed(() => tools[activeHoverItemIndex.value]);
     const showHelpToolTip = ref(false);
     const tooltipTrigger = ref(null);
     const fileNameRef = ref(null);
-    const showDownloadOptions = ref(false);
 
     const filename = computed({
       get() {
@@ -139,15 +124,6 @@ export default {
       }
     };
 
-    const toggleDownloadOptions = () => {
-      if (!showDownloadOptions.value) {
-        showDownloadOptions.value = true;
-      }
-    };
-
-    const saveScreenshot = () => {
-      actions.saveAsImage();
-    };
     return {
       updateFilename,
       fileNameRef,
@@ -158,18 +134,12 @@ export default {
       tools,
       activeTool,
       setActiveTool,
-      saveFile,
       setActiveHoverItemIndex,
       hoveredTool,
       activeHoverItemIndex,
       showHelpToolTip,
       clearToolTipTrigger,
       createToolTipTrigger,
-      toggleDownloadOptions,
-      showDownloadOptions,
-      saveGeoJson,
-      saveKML,
-      saveScreenshot,
       createRoute,
       iconForTool,
     };
@@ -324,49 +294,6 @@ export default {
     align-items: center;
     justify-content: flex-end;
     padding: 0px;
-
-    .btn-share {
-      background: var(--color-primary);
-      border: 0;
-      border-radius: 3px;
-      height: 40px;
-      padding: 0 10px;
-      margin-right: 5px;
-      color: var(--color-secondary);
-      display: flex;
-      align-items: center;
-      opacity: 0.9;
-
-      span {
-        margin-right: 5px;
-        color: currentColor;
-      }
-
-      &:hover {
-        cursor: pointer;
-        opacity: 1;
-      }
-    }
-
-    .btn-download {
-      background: var(--color-dark-background-light);
-      color: var(--color-secondary);
-      border: 0;
-      width: auto;
-      padding: 0 10px;
-      height: 40px;
-      border-radius: 3px;
-      opacity: 0.7;
-      margin-right: 5px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
-      &:hover {
-        cursor: pointer;
-        opacity: 1;
-      }
-    }
   }
 }
 </style>

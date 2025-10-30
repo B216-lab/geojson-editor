@@ -29,7 +29,6 @@
 import NavBar from "@/components/studio/NavBar.vue";
 import ExplorerPanel from "@/components/studio/Explorer/ExplorerPanel.vue";
 import DetailsPanel from "@/components/studio/DetailsPanel.vue";
-import FileImportModal from "@/components/studio/Dialogs/FileImportModal.vue";
 
 import {
   computed,
@@ -41,9 +40,6 @@ import {
 } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule";
 import { useRoute } from "vue-router";
-import GenerateImageModal from "@/components/studio/Dialogs/ImageGenerationDialog.vue";
-import ShareMapModal from "@/components/studio/Dialogs/ShareMapModal.vue";
-import MapSearch from "@/components/studio/Dialogs/MapSearch.vue";
 const EditorView = defineAsyncComponent({
   loader: () => import("@/components/studio/Editor/EditorView.vue"),
   loadingComponent: "",
@@ -55,10 +51,6 @@ export default {
     ExplorerPanel,
     EditorView,
     DetailsPanel,
-    GenerateImageModal,
-    ShareMapModal,
-    MapSearch,
-    FileImportModal,
   },
   setup() {
     const studioLayoutRef = ref(null);
@@ -68,34 +60,7 @@ export default {
     const ProjectStore = useStoreModule("projects");
     const isLoading = ref(false);
     const route = useRoute();
-    const showImportModal = computed(() => UIStore.getters.showImportModal);
-    const showMapSearch = computed(() => UIStore.getters.showMapSearch);
-    const setShowMapSearch = UIStore.actions.setShowMapSearch;
-    const setShowImportModal = UIStore.actions.setShowImportModal;
-    const fileToImport = ref(null);
     const isPreviewMode = computed(() => !!route.query?.preview);
-    const isGeneratingImage = computed(
-      () => EditorStore.getters.isGeneratingImage
-    );
-    const showShareModal = ref(false);
-
-    const captureDrop = (event) => {
-      const { dataTransfer } = event;
-      const files = dataTransfer.files;
-      if (files && files.length > 0) {
-        const filename = files[0]?.name;
-        const regex = new RegExp(`.*[.geojson|.json|.kml|.csv]`, "i");
-        if (filename && regex.test(filename)) {
-          fileToImport.value = files[0];
-          setShowImportModal(true);
-        }
-      }
-    };
-
-    const closeImportModal = () => {
-      setShowImportModal(false);
-      fileToImport.value = null;
-    };
 
     const initializeProject = async () => {
       isLoading.value = true;
@@ -115,17 +80,8 @@ export default {
     onBeforeMount(resetSotres);
     return {
       studioLayoutRef,
-      showImportModal,
-      setShowImportModal,
-      captureDrop,
-      fileToImport,
-      closeImportModal,
       isLoading,
       isPreviewMode,
-      isGeneratingImage,
-      showShareModal,
-      showMapSearch,
-      setShowMapSearch,
     };
   },
 };
