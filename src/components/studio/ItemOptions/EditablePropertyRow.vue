@@ -11,8 +11,8 @@
       </button>
     </form>
     <div v-if="showEditableOptions" class="editable-options" v-click-away="() => {
-        showEditableOptions = false;
-      }
+      showEditableOptions = false;
+    }
       ">
       <div class="item" v-for="option in options" :key="option.id" @click="selectAction(option.id)">
         <span>{{ option.name }}</span>
@@ -21,93 +21,45 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { ref, computed, watch } from "vue";
 
-export default {
-  props: {
-    name: {
-      type: String,
-      default: "",
-    },
-    value: {
-      type: [String, Number],
-      default: "",
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  components: {
-    Icon,
-  },
-  setup(props, { emit }) {
-    const propName = ref(props.name);
-    const propNameRef = ref(null);
-    const propValue = ref(props.value);
-    const propValueRef = ref(null);
-    const showEditableOptions = ref(false);
+const props = defineProps<{ name?: string; value?: string | number; disabled?: boolean }>()
+const emit = defineEmits<{ (e: 'update', payload: { name: string; value: string | number }): void; (e: 'delete', name: string): void }>()
 
-    const editableOptions = computed(() => ({
-      copyValue: {
-        id: "copyValue",
-        name: "Copy Value",
-      },
-      delete: {
-        id: "delete",
-        name: "Delete",
-        hide: props.disabled,
-      },
-    }));
-    const displayEditOptions = computed(() =>
-      Object.values(editableOptions.value).filter((item) => !item.hide)
-    );
+const propName = ref(props.name || "");
+const propNameRef = ref<HTMLInputElement | null>(null);
+const propValue = ref(props.value ?? "");
+const propValueRef = ref<HTMLInputElement | null>(null);
+const showEditableOptions = ref(false);
 
-    watch(props, (props) => {
-      propName.value = props.name;
-      propValue.value = props.value;
-    });
+const editableOptions = computed(() => ({
+  copyValue: { id: 'copyValue', name: 'Copy Value' },
+  delete: { id: 'delete', name: 'Delete', hide: !!props.disabled },
+}))
+const options = computed(() => Object.values(editableOptions.value).filter((item: any) => !item.hide))
 
-    const openDropDownOptions = () => {
-      if (!showEditableOptions.value) {
-        showEditableOptions.value = true;
-      }
-    };
+watch(() => [props.name, props.value], () => {
+  propName.value = props.name || ''
+  propValue.value = props.value ?? ''
+})
 
-    const copyValue = () => {
-      navigator?.clipboard?.writeText(`${props.value}`);
-    };
+const openDropDownOptions = () => { if (!showEditableOptions.value) showEditableOptions.value = true }
+const copyValue = () => { navigator?.clipboard?.writeText(`${props.value ?? ''}`) }
+const selectAction = (action: string) => {
+  switch (action) {
+    case editableOptions.value.delete.id:
+      emit('delete', props.name || '')
+      break
+    case editableOptions.value.copyValue.id:
+      copyValue()
+      break
+  }
+  showEditableOptions.value = false
+}
+const updateProperty = () => { emit('update', { name: propName.value, value: propValue.value }) }
 
-    const selectAction = (action) => {
-      switch (action) {
-        case editableOptions.value.delete.id:
-          emit("delete", props.name);
-          break;
-        case editableOptions.value.copyValue.id:
-          copyValue();
-          break;
-      }
-      showEditableOptions.value = false;
-    };
-
-    const updateProperty = () => {
-      emit("update", { name: propName.value, value: propValue.value });
-    };
-    return {
-      updateProperty,
-      propName,
-      propValue,
-      propNameRef,
-      propValueRef,
-      options: displayEditOptions.value,
-      showEditableOptions,
-      openDropDownOptions,
-      selectAction,
-    };
-  },
-};
 </script>
 
 <style lang="scss" scoped>

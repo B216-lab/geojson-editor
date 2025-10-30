@@ -48,7 +48,6 @@ defineEmits<{ (e: 'click'): void }>()
   z-index: 1;
   color: var(--color-secondary);
   font-size: var(--font-size-s);
-  // margin: 0 0 5px 0;
 
   &.small {
     padding: 10px 15px;

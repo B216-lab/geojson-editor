@@ -13,7 +13,7 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { Icon } from "@iconify/vue";
 import FeatureAppearence from "./FeatureAppearence.vue";
@@ -21,73 +21,34 @@ import FeatureDetails from "./FeatureDetails.vue";
 import { useStoreModule } from "@/composables/useStoreModule";
 import { FEATURE_TYPES } from "@/models/Feature.model";
 
-export default {
-  components: {
-    Icon,
-    FeatureAppearence,
-    FeatureDetails,
-  },
-  props: {
-    feature: {
-      type: Object,
-      required: true,
-    },
-  },
-  setup() {
-    const UIStore = useStoreModule("UI");
-    const isShapesEditable = computed(
-      () => UIStore.getters.getAccessFlags.isShapesEditable
-    );
+defineProps<{ feature: any }>()
 
-    const tabs = computed(() => ({
-      ...(isShapesEditable.value
-        ? {
-          appearence: {
-            id: "appearence",
-            name: "Appearence",
-            component: "FeatureAppearence",
-          },
-        }
-        : {}),
-      details: {
-        id: "details",
-        name: "Details",
-        component: "FeatureDetails",
-      },
-    }));
+const UIStore = useStoreModule("UI");
+const isShapesEditable = computed(() => UIStore.getters.getAccessFlags.isShapesEditable);
 
-    const activeTab = ref("details");
-    const activeComponent = computed(
-      () => tabs.value[activeTab.value].component
-    );
+const tabs = computed(() => ({
+  ...(isShapesEditable.value ? { appearence: { id: 'appearence', name: 'Appearence', component: 'FeatureAppearence' } } : {}),
+  details: { id: 'details', name: 'Details', component: 'FeatureDetails' },
+}))
 
-    onMounted(() => {
-      activeTab.value = Object.keys(tabs.value)[0];
-    });
+const activeTab = ref('details')
+const activeComponent = computed(() => (tabs.value as any)[activeTab.value].component)
+onMounted(() => { activeTab.value = Object.keys(tabs.value)[0] })
 
-    const iconForShape = (type) => {
-      switch (type) {
-        case FEATURE_TYPES.Polygon:
-        case FEATURE_TYPES.MultiPolygon:
-          return "mdi:shape-outline";
-        case FEATURE_TYPES.LineString:
-        case FEATURE_TYPES.MultiLineString:
-          return "mdi:vector-line";
-        case FEATURE_TYPES.Point:
-          return "mdi:map-marker-outline";
-        default:
-          return "mdi:shape-outline";
-      }
-    };
-
-    return {
-      tabs: Object.values(tabs.value),
-      activeComponent,
-      activeTab,
-      iconForShape,
-    };
-  },
-};
+const iconForShape = (type: string) => {
+  switch (type) {
+    case FEATURE_TYPES.Polygon:
+    case FEATURE_TYPES.MultiPolygon:
+      return 'mdi:shape-outline'
+    case FEATURE_TYPES.LineString:
+    case FEATURE_TYPES.MultiLineString:
+      return 'mdi:vector-line'
+    case FEATURE_TYPES.Point:
+      return 'mdi:map-marker-outline'
+    default:
+      return 'mdi:shape-outline'
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -15,159 +15,109 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import VSection from "@/components/base/v-section.vue";
 import VScaleInput from "@/components/base/v-scale-input.vue";
-import { FEATURE_TYPES } from "@/models/Feature.model";
+// FEATURE_TYPES kept for reference; type checks use string values
 import { computed } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
-const debounce = (fn, delay = 300) => {
-  let t;
-  return (...args) => {
+const debounce = (fn: Function, delay = 300) => {
+  let t: any;
+  return (...args: any[]) => {
     clearTimeout(t);
     t = setTimeout(() => fn(...args), delay);
   };
 };
 
-export default {
-  components: {
-    VSection,
-    VScaleInput,
-  },
-  props: {
-    feature: {
-      typeo: Object,
-      required: true,
-    },
-  },
-  setup(props) {
-    const featureType = computed(
-      () => FEATURE_TYPES[props.feature.geometry.type]
-    );
-    const enableFillColor = computed(() => {
-      return (
-        featureType.value === FEATURE_TYPES.Polygon ||
-        featureType.value === FEATURE_TYPES.MultiPolygon ||
-        featureType.value === FEATURE_TYPES.Point
-      );
+const props = defineProps<{ feature: any }>()
+
+const featureType = computed(() => props.feature.geometry.type as string);
+const enableFillColor = computed(() => {
+  return (
+    featureType.value === 'Polygon' ||
+    featureType.value === 'MultiPolygon' ||
+    featureType.value === 'Point'
+  );
+});
+
+const enableLineProperties = computed(() => {
+  return (
+    featureType.value === 'Polygon' ||
+    featureType.value === 'MultiPolygon' ||
+    featureType.value === 'Point' ||
+    featureType.value === 'LineString' ||
+    featureType.value === 'MultiLineString'
+  );
+});
+
+const enablePointProperties = computed(() => featureType.value === 'Point');
+
+const { actions } = useStoreModule("editor") as any;
+
+const debouncedFeatureSync = debounce(() => {
+  actions.syncFeatureProperties({ featureId: props.feature.properties.id });
+}, 500);
+
+const updateFillColor = (color: any) => {
+  if (JSON.stringify(props.feature.properties.fillColor) !== JSON.stringify(color)) {
+    actions.updateFeatureProperties({
+      featureId: props.feature.properties.id,
+      properties: { fillColor: color },
+      shouldSync: false,
     });
+    debouncedFeatureSync();
+  }
+};
 
-    const enableLineProperties = computed(() => {
-      return (
-        featureType.value === FEATURE_TYPES.Polygon ||
-        featureType.value === FEATURE_TYPES.MultiPolygon ||
-        featureType.value === FEATURE_TYPES.Point ||
-        featureType.value === FEATURE_TYPES.LineString ||
-        featureType.value === FEATURE_TYPES.MultiLineString
-      );
+const updateHideFill = (isHidden: boolean) => {
+  actions.updateFeatureProperties({
+    featureId: props.feature.properties.id,
+    properties: { hideFill: isHidden },
+    shouldSync: false,
+  });
+  debouncedFeatureSync();
+};
+
+const updateLineColor = (color: any) => {
+  if (JSON.stringify(props.feature.properties.lineColor) !== JSON.stringify(color)) {
+    actions.updateFeatureProperties({
+      featureId: props.feature.properties.id,
+      properties: { lineColor: color },
+      shouldSync: false,
     });
+    debouncedFeatureSync();
+  }
+};
 
-    const enablePointProperties = computed(() => {
-      return featureType.value === FEATURE_TYPES.Point;
+const updateHideLine = (isHidden: boolean) => {
+  actions.updateFeatureProperties({
+    featureId: props.feature.properties.id,
+    properties: { hideLine: isHidden },
+    shouldSync: false,
+  });
+  debouncedFeatureSync();
+};
+
+
+const updatePointRadius = (radius: number) => {
+  if (props.feature.properties.pointRadius !== radius) {
+    actions.updateFeatureProperties({
+      featureId: props.feature.properties.id,
+      properties: { pointRadius: radius },
+      shouldSync: false,
     });
+    debouncedFeatureSync();
+  }
+};
 
-    const { actions } = useStoreModule("editor");
 
-    const debouncedFeatureSync = debounce(() => {
-      actions.syncFeatureProperties({ featureId: props.feature.properties.id });
-    }, 500);
-
-    const updateFillColor = (color) => {
-      if (JSON.stringify(props.feature.properties.fillColor) !== JSON.stringify(color)) {
-        actions.updateFeatureProperties({
-          featureId: props.feature.properties.id,
-          properties: { fillColor: color },
-          shouldSync: false,
-        });
-        debouncedFeatureSync();
-      }
-    };
-
-    const updateHideFill = (isHidden) => {
-      actions.updateFeatureProperties({
-        featureId: props.feature.properties.id,
-        properties: { hideFill: isHidden },
-        shouldSync: false,
-      });
-      debouncedFeatureSync();
-    };
-
-    const updateLineColor = (color) => {
-      if (JSON.stringify(props.feature.properties.lineColor) !== JSON.stringify(color)) {
-        actions.updateFeatureProperties({
-          featureId: props.feature.properties.id,
-          properties: { lineColor: color },
-          shouldSync: false,
-        });
-        debouncedFeatureSync();
-      }
-    };
-
-    const updateHideLine = (isHidden) => {
-      actions.updateFeatureProperties({
-        featureId: props.feature.properties.id,
-        properties: { hideLine: isHidden },
-        shouldSync: false,
-      });
-      debouncedFeatureSync();
-    };
-
-    const updateLineWidth = (width) => {
-      if (props.feature.properties.lineWidth !== width) {
-        actions.updateFeatureProperties({
-          featureId: props.feature.properties.id,
-          properties: { lineWidth: width },
-          shouldSync: false,
-        });
-        debouncedFeatureSync();
-      }
-    };
-
-    const updatePointRadius = (radius) => {
-      if (props.feature.properties.pointRadius !== radius) {
-        actions.updateFeatureProperties({
-          featureId: props.feature.properties.id,
-          properties: { pointRadius: radius },
-          shouldSync: false,
-        });
-        debouncedFeatureSync();
-      }
-    };
-
-    const updateWidthScale = (scale) => {
-      actions.updateFeatureProperties({
-        featureId: props.feature.properties.id,
-        properties: { widthScale: scale, lineWidth: 1 },
-        shouldSync: false,
-      });
-      debouncedFeatureSync();
-    };
-
-    const updateRadiusScale = (scale) => {
-      actions.updateFeatureProperties({
-        featureId: props.feature.properties.id,
-        properties: { radiusScale: scale, pointRadius: 1 },
-        shouldSync: false,
-      });
-      debouncedFeatureSync();
-    };
-
-    return {
-      FEATURE_TYPES,
-      enableFillColor,
-      featureType,
-      enableLineProperties,
-      updateFillColor,
-      updateLineColor,
-      updateLineWidth,
-      updateHideFill,
-      updateHideLine,
-      enablePointProperties,
-      updatePointRadius,
-      updateWidthScale,
-      updateRadiusScale,
-    };
-  },
+const updateRadiusScale = (scale: string) => {
+  actions.updateFeatureProperties({
+    featureId: props.feature.properties.id,
+    properties: { radiusScale: scale, pointRadius: 1 },
+    shouldSync: false,
+  });
+  debouncedFeatureSync();
 };
 </script>
 

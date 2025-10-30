@@ -8,69 +8,47 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { useStoreModule } from "@/composables/useStoreModule";
-import { computed, defineComponent } from "vue";
+import { computed } from "vue";
 import VSection from "@/components/base/v-section.vue";
-const debounce = (fn, delay = 300) => {
-  let t;
-  return (...args) => {
+const debounce = (fn: Function, delay = 300) => {
+  let t: any;
+  return (...args: any[]) => {
     clearTimeout(t);
     t = setTimeout(() => fn(...args), delay);
   };
 };
 
-export default defineComponent({
-  components: {
-    VSection,
-  },
-  setup() {
-    const EditorStore = useStoreModule("editor");
-    const selectedItemsCount = computed(
-      () => EditorStore.getters.getSelectedFeatureIds?.length
-    );
-    const groupedProperties = computed(
-      () => EditorStore.getters.getGroupedPropertiesFromSelected
-    );
+const EditorStore = useStoreModule("editor");
+const selectedItemsCount = computed(() => EditorStore.getters.getSelectedFeatureIds?.length);
+const groupedProperties = computed(() => EditorStore.getters.getGroupedPropertiesFromSelected);
 
-    const debouncedFeatureSync = debounce((featureIds) => {
-      EditorStore.actions.syncFeatureProperties({ featureIds });
-    }, 500);
+const debouncedFeatureSync = debounce((featureIds: string[]) => {
+  EditorStore.actions.syncFeatureProperties({ featureIds });
+}, 500);
 
-    const updateFillColor = (property, color) => {
-      if (JSON.stringify(property.value) !== JSON.stringify(color)) {
-        EditorStore.actions.updateMultipleFeatureProperties({
-          featureIds: property.featureIds,
-          properties: {
-            fillColor: color,
-          },
-          shouldSync: false,
-        });
-        debouncedFeatureSync(property.featureIds);
-      }
-    };
+const updateFillColor = (property: any, color: any) => {
+  if (JSON.stringify(property.value) !== JSON.stringify(color)) {
+    EditorStore.actions.updateMultipleFeatureProperties({
+      featureIds: property.featureIds,
+      properties: { fillColor: color },
+      shouldSync: false,
+    });
+    debouncedFeatureSync(property.featureIds);
+  }
+};
 
-    const updateLineColor = (property, color) => {
-      if (JSON.stringify(property.value) !== JSON.stringify(color)) {
-        EditorStore.actions.updateMultipleFeatureProperties({
-          featureIds: property.featureIds,
-          properties: {
-            lineColor: color,
-          },
-          shouldSync: false,
-        });
-        debouncedFeatureSync(property.featureIds);
-      }
-    };
-
-    return {
-      selectedItemsCount,
-      groupedProperties,
-      updateFillColor,
-      updateLineColor,
-    };
-  },
-});
+const updateLineColor = (property: any, color: any) => {
+  if (JSON.stringify(property.value) !== JSON.stringify(color)) {
+    EditorStore.actions.updateMultipleFeatureProperties({
+      featureIds: property.featureIds,
+      properties: { lineColor: color },
+      shouldSync: false,
+    });
+    debouncedFeatureSync(property.featureIds);
+  }
+};
 </script>
 
 <style lang="scss" scoped>

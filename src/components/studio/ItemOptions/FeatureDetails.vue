@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import VSection from "@/components/base/v-section.vue";
 import { computed } from "vue";
 import { DEFAULT_PROPERTIES } from "@/models/Feature.model";
@@ -31,121 +31,89 @@ import { Icon } from "@iconify/vue";
 import EditablePropertyRow from "./EditablePropertyRow.vue";
 import { useStoreModule } from "@/composables/useStoreModule";
 
-export default {
-  components: {
-    VSection,
-    Icon,
-    EditablePropertyRow,
-  },
-  props: {
-    feature: {
-      type: Object,
-      required: true,
-    },
-  },
-  setup(props) {
-    const { actions } = useStoreModule("editor");
-    const UIStore = useStoreModule("UI");
-    const isShapesEditable = computed(() => UIStore.getters.getAccessFlags.isShapesEditable);
-    const defaultProperties = computed(() => {
-      const { area, distance, perimeter, pointRadius, radiusScale } =
-        props.feature.properties;
-      const rawMeta = {
-        area: area && areaFormatter(area),
-        distance: distance && distanceFormatter(distance),
-        perimeter: perimeter && distanceFormatter(perimeter),
-        radius: pointRadius && `${pointRadius} ${radiusScale}`,
-      };
-      const meta = Object.keys(rawMeta).reduce((result, key) => {
-        if (rawMeta[key]) {
-          result.push({
-            name: key,
-            value: rawMeta[key],
-          });
-        }
-        return result;
-      }, []);
-      return meta;
-    });
+const props = defineProps<{ feature: any }>()
+const { actions } = useStoreModule("editor");
+const UIStore = useStoreModule("UI");
+const isShapesEditable = computed(() => UIStore.getters.getAccessFlags.isShapesEditable);
+const defaultProperties = computed(() => {
+  const { area, distance, perimeter, pointRadius, radiusScale } = props.feature.properties;
+  const rawMeta: Record<string, any> = {
+    area: area && areaFormatter(area),
+    distance: distance && distanceFormatter(distance),
+    perimeter: perimeter && distanceFormatter(perimeter),
+    radius: pointRadius && `${pointRadius} ${radiusScale}`,
+  };
+  const meta: Array<{ name: string; value: any }> = Object.keys(rawMeta).reduce((result: any[], key: string) => {
+    if (rawMeta[key]) {
+      result.push({ name: key, value: rawMeta[key] });
+    }
+    return result;
+  }, []);
+  return meta as any;
+});
 
-    const customProperties = computed(() => {
-      const all = props?.feature?.properties || {};
-      const exclude = new Set(DEFAULT_PROPERTIES);
-      return Object.keys(all).reduce((acc, key) => {
-        if (!exclude.has(key)) acc[key] = all[key];
-        return acc;
-      }, {});
-    });
+const customProperties = computed(() => {
+  const all = props?.feature?.properties || {};
+  const exclude = new Set(DEFAULT_PROPERTIES);
+  return Object.keys(all).reduce((acc: Record<string, any>, key: string) => {
+    if (!exclude.has(key)) acc[key] = all[key];
+    return acc;
+  }, {});
+});
 
-    const propertyIds = computed(() => Object.keys(props.feature.properties));
+const propertyIds = computed(() => Object.keys(props.feature.properties));
 
-    const generateNextPropertyName = (properties) => {
-      const regex = new RegExp(`property ([0-9]+)`);
-      let currentIndex = 0;
-      Object.keys(properties).forEach((key) => {
-        if (regex.test(key)) {
-          const index = parseInt(key.match(regex)[1]);
-          if (index > currentIndex) {
-            currentIndex = index;
-          }
-        }
-      });
-      return `property ${currentIndex + 1}`;
-    };
+const generateNextPropertyName = (properties: Record<string, any>) => {
+  const regex = new RegExp(`property ([0-9]+)`);
+  let currentIndex = 0;
+  Object.keys(properties).forEach((key) => {
+    const match = key.match(regex);
+    if (match) {
+      const index = parseInt(match[1]);
+      if (index > currentIndex) currentIndex = index;
+    }
+  });
+  return `property ${currentIndex + 1}`;
+};
 
-    const addNewProperty = () => {
-      if (!isShapesEditable.value) return;
-      const propertyName = generateNextPropertyName(customProperties.value);
-      actions.updateFeatureProperties({
-        featureId: props.feature?.properties?.id,
-        properties: {
-          [propertyName]: "",
-        },
-        shouldSync: true,
-      });
-    };
+const addNewProperty = () => {
+  if (!isShapesEditable.value) return;
+  const propertyName = generateNextPropertyName(customProperties.value);
+  actions.updateFeatureProperties({
+    featureId: props.feature?.properties?.id,
+    properties: { [propertyName]: "" },
+    shouldSync: true,
+  });
+};
 
-    const updateProperty = ({ itemId, name, value }) => {
-      actions.updateFeatureProperties({
-        featureId: props.feature?.properties?.id,
-        properties: propertyIds.value.reduce((result, key) => {
-          if (key === itemId) {
-            result[name] = value;
-          } else {
-            result[key] = props.feature?.properties[key];
-          }
-          return result;
-        }, {}),
-        replaceProperties: true,
-        shouldSync: true,
-      });
-    };
+const updateProperty = ({ itemId, name, value }: { itemId: string; name: string; value: any }) => {
+  actions.updateFeatureProperties({
+    featureId: props.feature?.properties?.id,
+    properties: propertyIds.value.reduce((result: Record<string, any>, key: string) => {
+      if (key === itemId) {
+        result[name] = value;
+      } else {
+        result[key] = props.feature?.properties[key];
+      }
+      return result;
+    }, {}),
+    replaceProperties: true,
+    shouldSync: true,
+  });
+};
 
-    const deleteProperty = (name) => {
-      actions.updateFeatureProperties({
-        featureId: props.feature?.properties?.id,
-        properties: propertyIds.value.reduce((result, key) => {
-          if (key === name) {
-            // do nothing
-          } else {
-            result[key] = props.feature?.properties[key];
-          }
-          return result;
-        }, {}),
-        replaceProperties: true,
-        shouldSync: true,
-      });
-    };
-
-    return {
-      defaultProperties,
-      customProperties,
-      addNewProperty,
-      updateProperty,
-      deleteProperty,
-      isShapesEditable,
-    };
-  },
+const deleteProperty = (name: string) => {
+  actions.updateFeatureProperties({
+    featureId: props.feature?.properties?.id,
+    properties: propertyIds.value.reduce((result: Record<string, any>, key: string) => {
+      if (key !== name) {
+        result[key] = props.feature?.properties[key];
+      }
+      return result;
+    }, {}),
+    replaceProperties: true,
+    shouldSync: true,
+  });
 };
 </script>
 

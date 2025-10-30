@@ -17,10 +17,10 @@
           <Icon icon="mdi:chevron-down" :class="['icon', { rotate: showDropDownOptions }]" width="18" height="18" />
         </div>
         <div v-if="showDropDownOptions" class="dropdown-options" v-click-away="() => {
-            showDropDownOptions = false;
-          }
+          showDropDownOptions = false;
+        }
           ">
-          <div v-for="item in Object.values(styles)" :key="item.id" class="item" @click="selectActiveMapStyle(item.id)">
+          <div v-for="item in styleItems" :key="item.id" class="item" @click="selectActiveMapStyle(item.id)">
             <img :src="item.image" :alt="item.name" class="thumbnail" />
             <dl>
               <dt>{{ item.name }}</dt>
@@ -45,60 +45,30 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import VSection from "@/components/base/v-section.vue";
 import { Icon } from "@iconify/vue";
 import VCheckBox from "@/components/base/v-checkbox.vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
-
 import { ref, computed } from "vue";
 
-export default {
-  components: {
-    VSection,
-    Icon,
-    VCheckBox,
-  },
-  setup() {
-    const store = useStoreModule("map");
-    const { getters, actions } = store;
-    const styles = computed(() => getters.getAllMapStyles);
-    const activeStyle = computed(() => getters.getActiveMapStyleId);
-    const showMapLabels = computed(() => getters.getShowMapLabels);
-    const getShowPropertiesPopup = computed(() => getters.getShowPropertiesPopup);
-    const showDropDownOptions = ref(false);
-    const setShowMapLabels = actions.setShowMapLabels;
-    const getUseExactDimensions = computed(
-      () => getters.getUseExactDimensions
-    );
-    const setUseExactDimensions = actions.setUseExactDimensions;
-    const setShowPropertiesPopup = actions.setShowPropertiesPopup;
+const store = useStoreModule("map") as any;
+const { getters, actions } = store;
+const styles = computed(() => getters.getAllMapStyles);
+const styleItems = computed(() => Object.values(styles.value || {}) as any[])
+const activeStyle = computed(() => getters.getActiveMapStyleId);
+const showMapLabels = computed(() => getters.getShowMapLabels);
+const getShowPropertiesPopup = computed(() => getters.getShowPropertiesPopup);
+const showDropDownOptions = ref(false);
+const setShowMapLabels = actions.setShowMapLabels;
+// const getUseExactDimensions = computed(() => getters.getUseExactDimensions);
+// const setUseExactDimensions = actions.setUseExactDimensions;
+const setShowPropertiesPopup = actions.setShowPropertiesPopup;
 
-    const openDropDownOptions = () => {
-      if (!showDropDownOptions.value) {
-        showDropDownOptions.value = true;
-      }
-    };
-
-    const selectActiveMapStyle = (mapStyle) => {
-      actions.setActiveMapStyleId(mapStyle);
-      showDropDownOptions.value = false;
-    };
-
-    return {
-      styles,
-      activeStyle,
-      showDropDownOptions,
-      selectActiveMapStyle,
-      openDropDownOptions,
-      showMapLabels,
-      setShowMapLabels,
-      getUseExactDimensions,
-      setUseExactDimensions,
-      setShowPropertiesPopup,
-      getShowPropertiesPopup
-    };
-  },
+const openDropDownOptions = () => { if (!showDropDownOptions.value) showDropDownOptions.value = true };
+const selectActiveMapStyle = (mapStyle: string) => {
+  actions.setActiveMapStyleId(mapStyle);
+  showDropDownOptions.value = false;
 };
 </script>
 
