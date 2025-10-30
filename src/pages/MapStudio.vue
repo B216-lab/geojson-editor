@@ -1,12 +1,6 @@
 <template>
-  <div
-    v-else
-    :class="['studio-layout']"
-    ref="studioLayoutRef"
-    @drop.prevent="captureDrop"
-    @dragover.prevent
-  >
-    <nav-bar @share="showShareModal = true" />
+  <div :class="['studio-layout']" ref="studioLayoutRef">
+    <nav-bar />
     <div class="content-layout">
       <explorer-panel />
       <div class="editor-area">
@@ -14,14 +8,6 @@
       </div>
       <details-panel />
     </div>
-    <FileImportModal
-      v-if="showImportModal"
-      :file="fileToImport"
-      @close="closeImportModal"
-    />
-    <MapSearch v-if="showMapSearch" @close="setShowMapSearch(false)" />
-    <GenerateImageModal v-if="isGeneratingImage" />
-    <ShareMapModal v-if="showShareModal" @close="showShareModal = false" />
   </div>
 </template>
 
