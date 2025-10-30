@@ -1,5 +1,5 @@
 <script>
-import Deck from "@deck.gl/core/dist/es5/lib/deck";
+import { Deck } from "@deck.gl/core";
 
 /**
  * @emits view-state-change on change in the view state of deck.gl
@@ -177,11 +177,7 @@ export default {
     <slot name="background"></slot>
     <!-- Normal slots, which will always be displayed on the background of the visualization/deck instance -->
     <slot></slot>
-    <canvas
-      id="deck-canvas"
-      ref="canvas"
-      @contextmenu="handleContextMenu"
-    ></canvas>
+    <canvas id="deck-canvas" ref="canvas" @contextmenu="handleContextMenu"></canvas>
     <!-- To be displayed on the foreground of the visualization/deck instance -->
     <slot name="foreground"></slot>
   </div>
@@ -191,6 +187,7 @@ export default {
 .deck-container {
   position: relative;
 }
+
 .deck-container #map {
   position: absolute;
   top: 0;
@@ -200,6 +197,7 @@ export default {
   background: #e5e9ec;
   overflow: hidden;
 }
+
 .deck-container #deck-canvas {
   position: absolute;
   top: 0;

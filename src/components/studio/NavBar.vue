@@ -1,13 +1,5 @@
 <template>
   <div class="nav-bar">
-    <div class="header">
-      <form @submit.prevent="$refs.fileNameRef.blur()" @click="setFilenameEditable">
-        <input ref="fileNameRef" class="filename" v-model="filename" :readonly="readonly" @blur="updateFilename"
-          placeholder="Enter File Name" />
-        <input v-if="accessFlags.canChangeProjectName" v-show="false" type="submit" />
-      </form>
-      <Icon v-if="!accessFlags.canChangeProjectName" icon="mdi:lock-outline" width="18" height="18" class="lock-icon" />
-    </div>
     <div class="tool-bar">
       <div v-if="accessFlags.showTools" class="draw-tools" @mouseenter="createToolTipTrigger"
         @mouseleave="clearToolTipTrigger">
@@ -71,40 +63,8 @@ export default {
     const hoveredTool = computed(() => tools[activeHoverItemIndex.value]);
     const showHelpToolTip = ref(false);
     const tooltipTrigger = ref(null);
-    const fileNameRef = ref(null);
 
-    const filename = computed({
-      get() {
-        return getters.getFilename;
-      },
-      set(value) {
-        actions.setFilename(value);
-      },
-    });
-    const readonly = ref(true);
-    const setFilenameEditable = () => {
-      if (accessFlags.value.canChangeProjectName) {
-        readonly.value = false;
-      }
-    };
 
-    watch(readonly, (value) => {
-      if (!value) {
-        fileNameRef.value.focus();
-        fileNameRef.value.select();
-      }
-    });
-    const updateFilename = () => {
-      if (!accessFlags.value.canChangeProjectName) {
-        return;
-      }
-      readonly.value = true;
-      if (!filename.value) {
-        filename.value = "Untitled File";
-      } else {
-        actions.syncFileName();
-      }
-    };
 
     const setActiveHoverItemIndex = (index) => {
       activeHoverItemIndex.value = index;
@@ -124,11 +84,6 @@ export default {
     };
 
     return {
-      updateFilename,
-      fileNameRef,
-      filename,
-      setFilenameEditable,
-      readonly,
       accessFlags,
       tools,
       activeTool,
@@ -172,36 +127,6 @@ export default {
       }
     }
 
-    .lock-icon {
-      color: var(--font-color-light);
-    }
-
-    form {
-      flex: 1;
-      display: flex;
-      flex-direction: row;
-
-      .filename {
-        background: transparent;
-        color: var(--color-secondary);
-        border: 2px solid transparent;
-        outline: none;
-        padding: 5px;
-        min-width: 0;
-        width: 100%;
-
-        &[readonly] {
-          pointer-events: none;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-
-        &:focus {
-          border: 2px solid var(--color-primary);
-        }
-      }
-    }
   }
 
   .tool-bar {

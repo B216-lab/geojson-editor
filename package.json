@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@deck.gl-community/editable-layers": "^9.1.1",
     "@deck.gl/core": "^9.2.2",
     "@deck.gl/layers": "^9.2.2",
     "@mapbox/togeojson": "^0.16.2",
@@ -33,6 +34,7 @@
     "sass-embedded": "^1.93.2",
     "typescript": "~5.9.3",
     "vite": "^7.1.7",
+    "vite-plugin-vue-devtools": "^8.0.3",
     "vue-tsc": "^3.1.0"
   }
 }

@@ -1,6 +1,5 @@
 <template>
   <div id="editor-map-view" class="deck-container" ref="deckContainerRef">
-    <canvas id="screenshot-canvas" class="deck-container" v-show="false"></canvas>
     <v-deckgl :layers="layers" :viewState="viewState" :disableContextMenu="true" :cursor="cursor" :controller="{
       doubleClickZoom: false,
     }" @click="(info, event) => $emit('onClick', info, event)" @drag="(info, event) => $emit('onDrag', info, event)"
@@ -8,13 +7,13 @@
       @onDragEnd="(info, event) => $emit('onDragEnd', info, event)"
       @view-state-change="(viewState) => updateViewState(viewState)">
       <!-- Base map -->
-      <template v-slot:background>
+      <!-- <template v-slot:background>
         <div id="base-map" ref="map"></div>
-      </template>
+      </template> -->
       <!-- Map Labels -->
-      <template v-slot:foreground>
+      <!-- <template v-slot:foreground>
         <div id="foreground-map" ref="fgmap" v-show="showMapLabels"></div>
-      </template>
+      </template> -->
     </v-deckgl>
   </div>
   <MapControls @onClickSearch="setShowMapSearch(true)" @onClickZoomIn="zoomIn" @onClickZoomOut="zoomOut"
@@ -59,6 +58,8 @@ export default {
     const boundingBox = computed(() => editorGetters.getBoundingBox);
     const setShowMapSearch = UIStore.actions.setShowMapSearch;
     const deckContainerRef = ref(null);
+    const map = ref(null);
+    const fgmap = ref(null);
     const viewState = ref({
       latitude: 12.976387,
       longitude: 77.571529,
@@ -71,9 +72,9 @@ export default {
     onMounted(() => {
       baseMap = new Map({
         accessToken: ACCESS_TOKEN,
-        container: "base-map",
+        container: map.value,
         interactive: false,
-        style: getters.getActiveMapStyleURL,
+        style: activeMapStyleURL.value,
         center: [viewState.value.longitude, viewState.value.latitude],
         zoom: viewState.value.zoom,
         pitch: viewState.value.pitch,
@@ -90,20 +91,10 @@ export default {
         });
       });
 
-      // baseMap.on("load", () => {
-      //   const img = baseMap.getCanvas().toBlob(
-      //     (blob) => {
-      //       FileSaver.saveAs(blob, "file.jpg");
-      //       console.log(img);
-      //     },
-      //     "image/jpeg",
-      //     0.95
-      //   );
-      // });
 
       foregroundMap = new Map({
         accessToken: ACCESS_TOKEN,
-        container: "foreground-map",
+        container: fgmap.value,
         interactive: false,
         style: "mapbox://styles/haxzie/ckcd6vxu30fe01iqk51qaplby",
         center: [viewState.value.longitude, viewState.value.latitude],
@@ -236,6 +227,8 @@ export default {
       updateViewState,
       showMapLabels,
       deckContainerRef,
+      map,
+      fgmap,
       MapController,
       zoomIn,
       zoomOut,

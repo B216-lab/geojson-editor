@@ -1,28 +1,12 @@
 <template>
   <div class="editor-view">
-    <map-view
-      @onClick="onClickMap"
-      @onDragStart="() => setIsDragging(true)"
-      @onDragEnd="() => setIsDragging(false)"
-      :layers="layers"
-      :cursor="activeTool?.cursor"
-    />
-    <GeoPopup
-      v-if="popupData && !contextData && !isDragging"
-      :x="popupData?.x"
-      :y="popupData?.y"
-      :feature="popupData?.feature"
-      :showProperties="showProperties"
-    />
-    <ContextMeu
-      v-if="contextData && !isDragging"
-      :x="contextData?.x"
-      :y="contextData?.y"
-      :latitude="contextData?.latitude"
-      :longitude="contextData?.longitude"
-      :feature="contextData?.feature"
-      @close="contextData = null"
-    />
+    <map-view @onClick="onClickMap" @onDragStart="() => setIsDragging(true)" @onDragEnd="() => setIsDragging(false)"
+      :layers="layers" :cursor="activeTool?.cursor" />
+    <GeoPopup v-if="popupData && !contextData && !isDragging" :x="popupData?.x" :y="popupData?.y"
+      :feature="popupData?.feature" :showProperties="showProperties" />
+    <ContextMeu v-if="contextData && !isDragging" :x="contextData?.x" :y="contextData?.y"
+      :latitude="contextData?.latitude" :longitude="contextData?.longitude" :feature="contextData?.feature"
+      @close="contextData = null" />
   </div>
 </template>
 
@@ -31,13 +15,10 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import MapView from "./MapView.vue";
 import GeoPopup from "./GeoPopup.vue";
 import ContextMeu from "./ContextMenu.vue";
-import { EditableGeoJsonLayer } from "@nebula.gl/layers";
+import { EditableGeoJsonLayer } from "@deck.gl-community/editable-layers";
 import { GeoJsonLayer, IconLayer } from "@deck.gl/layers";
 import { useStoreModule } from "@/composables/useStoreModule.js";
-import {
-  EDITING_MODE,
-  MAP_TOOLS,
-} from "@/store/modules/editor/initialState.js";
+import { EDITING_MODE, MAP_TOOLS } from "@/stores/editor";
 import { DISTANCE_SCALE } from "@/utils/constants";
 
 export default {
