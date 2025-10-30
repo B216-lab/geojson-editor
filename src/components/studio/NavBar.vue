@@ -37,7 +37,6 @@ import { Icon } from "@iconify/vue";
 import { MAP_TOOLS } from "@/stores/editor";
 import { computed, ref, watch } from "vue";
 import { useStoreModule } from "@/composables/useStoreModule.js";
-import { createRoute } from "@/router";
 
 export default {
   components: {
@@ -140,7 +139,6 @@ export default {
       showHelpToolTip,
       clearToolTipTrigger,
       createToolTipTrigger,
-      createRoute,
       iconForTool,
     };
   },

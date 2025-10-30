@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { Toaster } from 'vue-sonner'
+import MapStudio from '@/pages/MapStudio.vue'
 </script>
 
 <template>
-  <RouterView />
+  <MapStudio />
   <Toaster position="bottom-center" rich-colors />
-  <!-- комментарии: компонент уведомлений -->
-
 </template>
 
 <style scoped></style>
