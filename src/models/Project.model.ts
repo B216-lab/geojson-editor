@@ -71,5 +71,3 @@ export default class Project {
         this._updatedAt = timeAgo(updatedAt)
     }
 }
-
-
