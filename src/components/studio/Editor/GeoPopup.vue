@@ -89,8 +89,6 @@ const meta = computed(() => {
   border: 1px solid var(--color-secondary-light);
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
 
-  // transition: 0.01s ease-in-out;
-
   .header {
     padding: 10px;
     display: flex;
@@ -129,8 +127,6 @@ const meta = computed(() => {
       padding: 5px 10px;
 
       .title {
-        // font-weight: bold;
-        // text-transform: capitalize;
         flex: 1;
         white-space: nowrap;
         overflow: hidden;
@@ -138,7 +134,6 @@ const meta = computed(() => {
       }
 
       .value {
-        // font-weight: bold;
         flex: 1;
         white-space: nowrap;
         overflow: hidden;
