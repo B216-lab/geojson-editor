@@ -18,8 +18,8 @@ export default class MapStyle {
     }
 
     generateMapboxThumbnailURL(url: string): string {
-        return `https://api.mapbox.com/styles/v1/${url.slice(16, url.length)}/static/-122.4241,37.78,14.25,0,0/200x200?access_token=${(process.env as any).VUE_APP_MAPBOX_TOKEN
-            }`
+        const token = (import.meta as any).env?.VITE_APP_MAPBOX_TOKEN || ''
+        return `https://api.mapbox.com/styles/v1/${url.slice(16, url.length)}/static/-122.4241,37.78,14.25,0,0/200x200?access_token=${token}`
     }
 }
 

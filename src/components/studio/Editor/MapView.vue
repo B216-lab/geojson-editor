@@ -1,24 +1,12 @@
 <template>
   <div id="editor-map-view" class="deck-container" ref="deckContainerRef">
-    <canvas
-      id="screenshot-canvas"
-      class="deck-container"
-      v-show="false"
-    ></canvas>
-    <v-deckgl
-      :layers="layers"
-      :viewState="viewState"
-      :disableContextMenu="true"
-      :cursor="cursor"
-      :controller="{
-        doubleClickZoom: false,
-      }"
-      @click="(info, event) => $emit('onClick', info, event)"
-      @drag="(info, event) => $emit('onDrag', info, event)"
+    <canvas id="screenshot-canvas" class="deck-container" v-show="false"></canvas>
+    <v-deckgl :layers="layers" :viewState="viewState" :disableContextMenu="true" :cursor="cursor" :controller="{
+      doubleClickZoom: false,
+    }" @click="(info, event) => $emit('onClick', info, event)" @drag="(info, event) => $emit('onDrag', info, event)"
       @onDragStart="(info, event) => $emit('onDragStart', info, event)"
       @onDragEnd="(info, event) => $emit('onDragEnd', info, event)"
-      @view-state-change="(viewState) => updateViewState(viewState)"
-    >
+      @view-state-change="(viewState) => updateViewState(viewState)">
       <!-- Base map -->
       <template v-slot:background>
         <div id="base-map" ref="map"></div>
@@ -29,12 +17,8 @@
       </template>
     </v-deckgl>
   </div>
-  <MapControls
-    @onClickSearch="setShowMapSearch(true)"
-    @onClickZoomIn="zoomIn"
-    @onClickZoomOut="zoomOut"
-    @onClickFitScreen="fitScreen"
-  />
+  <MapControls @onClickSearch="setShowMapSearch(true)" @onClickZoomIn="zoomIn" @onClickZoomOut="zoomOut"
+    @onClickFitScreen="fitScreen" />
 </template>
 
 <script>
@@ -68,7 +52,7 @@ export default {
     const { getters } = useStoreModule("map");
     const { getters: editorGetters, actions } = useStoreModule("editor");
     const UIStore = useStoreModule("UI");
-    const ACCESS_TOKEN = process.env.VUE_APP_MAPBOX_TOKEN;
+    const ACCESS_TOKEN = import.meta.env.VITE_APP_MAPBOX_TOKEN;
     const activeMapStyleURL = computed(() => getters.getActiveMapStyleURL);
     const showMapLabels = computed(() => getters.getShowMapLabels);
     const focusedFeature = computed(() => editorGetters.getFocusedFeature);
@@ -158,13 +142,13 @@ export default {
           let { latitude, longitude, zoom, bearing, pitch } = boundedViewState;
           zoom =
             feature.geometry.type === FEATURE_TYPES.Point ? zoom - 4 : zoom;
-          updateViewState({ 
-            latitude, 
-            longitude, 
-            zoom, 
-            bearing, 
+          updateViewState({
+            latitude,
+            longitude,
+            zoom,
+            bearing,
             pitch,
-            transitionDuration: 800, 
+            transitionDuration: 800,
             transitionInterpolator: new FlyToInterpolator({ speed: 2 })
           });
         } catch (error) {
@@ -235,7 +219,7 @@ export default {
             zoom: zoom > 19 ? 19 : zoom,
             bearing,
             pitch,
-            transitionDuration: 800, 
+            transitionDuration: 800,
             transitionInterpolator: new FlyToInterpolator({ speed: 2 })
           });
         } catch (error) {
@@ -276,6 +260,7 @@ export default {
     font-weight: 500;
   }
 }
+
 #base-map,
 #foreground-map {
   position: absolute;
@@ -292,6 +277,7 @@ export default {
   pointer-events: none;
   opacity: 1;
 }
+
 #deck-canvas {
   position: absolute;
   top: 0;
