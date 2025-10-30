@@ -1,7 +1,7 @@
 <template>
   <div class="editor-view">
     <map-view @onClick="onClickMap" @onDragStart="() => setIsDragging(true)" @onDragEnd="() => setIsDragging(false)"
-      :layers="layers" :cursor="activeTool?.cursor" />
+      :layers="layers" :cursor="mapCursor" />
     <GeoPopup v-if="popupData && !contextData && !isDragging" :x="popupData?.x" :y="popupData?.y"
       :feature="popupData?.feature" :showProperties="showProperties" />
     <ContextMeu v-if="contextData && !isDragging" :x="contextData?.x" :y="contextData?.y"
@@ -38,6 +38,8 @@ const activeEditMode = computed(() => editorStore.getActiveEditMode && EDITING_M
 
 const isDragging = ref(false);
 const setIsDragging = (value) => { isDragging.value = value; };
+
+const mapCursor = computed(() => (hoveredFeatureId.value ? 'pointer' : (activeTool.value?.cursor || 'default')));
 
 const tempGeoJson = ref({ type: "FeatureCollection", features: [] });
 const setGeoJson = (updatedData) => {
@@ -200,7 +202,7 @@ const setupShortCuts = (event) => {
         case "e": editorStore.setActiveTool(MAP_TOOLS.ellipse.id); break;
         case "l": editorStore.setActiveTool(MAP_TOOLS.line.id); break;
         case "o": editorStore.setActiveTool(MAP_TOOLS.point.id); break;
-        case "m": editorStore.setActiveTool(MAP_TOOLS.measure.id); break;
+        // case "m": editorStore.setActiveTool(MAP_TOOLS.measure.id); break;
         // case "s": uiStore.setShowMapSearch(true); break;
         case "D": mapStore.setUseExactDimensions(!mapStore.getUseExactDimensions); break;
         case "L": mapStore.setShowMapLabels(!mapStore.getShowMapLabels); break;
