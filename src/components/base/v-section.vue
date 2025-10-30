@@ -12,19 +12,8 @@
   </section>
 </template>
 
-<script>
-export default {
-  props: {
-    title: {
-      type: String,
-      default: null,
-    },
-    bold: {
-      type: Boolean,
-      default: false,
-    },
-  },
-};
+<script setup lang="ts">
+defineProps<{ title?: string | null; bold?: boolean }>()
 </script>
 
 <style lang="scss" scoped>

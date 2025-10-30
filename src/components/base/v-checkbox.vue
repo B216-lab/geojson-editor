@@ -6,33 +6,15 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { Icon } from "@iconify/vue";
 
-export default {
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: false,
-    },
-    label: {
-      type: String,
-      default: "",
-    },
-    size: {
-      type: [String, Number],
-      default: "18",
-    },
-  },
-  emits: {
-    'update:modelValue': {
-      type: Boolean
-    }
-  },
-  components: {
-    Icon,
-  },
-};
+defineProps<{
+  modelValue?: boolean;
+  label?: string;
+  size?: string | number;
+}>()
+defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()
 </script>
 
 <style lang="scss" scoped>

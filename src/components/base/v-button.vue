@@ -14,50 +14,20 @@
   </button>
 </template>
 
-<script>
-
-export default {
-  props: {
-    type: {
-      type: String,
-      default: "submit",
-    },
-    text: {
-      type: String,
-      default: "",
-    },
-    theme: {
-      type: String,
-      default: "primary",
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    small: {
-      type: Boolean,
-      default: false,
-    },
-    iconLeft: {
-      type: String,
-    },
-    iconRight: {
-      type: String,
-    },
-    rounded: {
-      type: Boolean,
-      default: false,
-    },
-    danger: {
-      type: Boolean,
-      default: false,
-    },
-  },
-};
+<script setup lang="ts">
+defineProps<{
+  type?: 'button' | 'submit' | 'reset';
+  text?: string;
+  theme?: string;
+  isLoading?: boolean;
+  disabled?: boolean;
+  small?: boolean;
+  iconLeft?: string;
+  iconRight?: string;
+  rounded?: boolean;
+  danger?: boolean;
+}>()
+defineEmits<{ (e: 'click'): void }>()
 </script>
 
 <style lang="scss" scoped>
@@ -134,7 +104,9 @@ export default {
   &.gradient {
     opacity: 1;
     background: var(--color-primary-gradient);
-  }  &.danger {
+  }
+
+  &.danger {
     opacity: 0.8;
     background: var(--color-error);
   }
