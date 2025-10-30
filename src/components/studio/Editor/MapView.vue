@@ -7,13 +7,13 @@
       @onDragEnd="(info, event) => $emit('onDragEnd', info, event)"
       @view-state-change="(viewState) => updateViewState(viewState)">
       <!-- Base map -->
-      <!-- <template v-slot:background>
+      <template v-slot:background>
         <div id="base-map" ref="map"></div>
-      </template> -->
+      </template>
       <!-- Map Labels -->
-      <!-- <template v-slot:foreground>
+      <template v-slot:foreground>
         <div id="foreground-map" ref="fgmap" v-show="showMapLabels"></div>
-      </template> -->
+      </template>
     </v-deckgl>
   </div>
   <MapControls @onClickSearch="setShowMapSearch(true)" @onClickZoomIn="zoomIn" @onClickZoomOut="zoomOut"
@@ -245,14 +245,6 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
-
-  .branding {
-    position: absolute;
-    bottom: 6px;
-    right: 0;
-    left: 110px;
-    font-weight: 500;
-  }
 }
 
 #base-map,

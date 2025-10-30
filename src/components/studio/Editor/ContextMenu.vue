@@ -158,7 +158,6 @@ export default {
   border-radius: 2px;
   border: 1px solid var(--color-secondary-light);
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-  // transition: 0.01s ease-in-out;
 
   .header {
     padding: 10px;

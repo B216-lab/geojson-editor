@@ -2,11 +2,11 @@
   <div class="editor-view">
     <map-view @onClick="onClickMap" @onDragStart="() => setIsDragging(true)" @onDragEnd="() => setIsDragging(false)"
       :layers="layers" :cursor="activeTool?.cursor" />
-    <GeoPopup v-if="popupData && !contextData && !isDragging" :x="popupData?.x" :y="popupData?.y"
-      :feature="popupData?.feature" :showProperties="showProperties" />
-    <ContextMeu v-if="contextData && !isDragging" :x="contextData?.x" :y="contextData?.y"
+    <!-- <GeoPopup v-if="popupData && !contextData && !isDragging" :x="popupData?.x" :y="popupData?.y"
+      :feature="popupData?.feature" :showProperties="showProperties" /> -->
+    <!-- <ContextMeu v-if="contextData && !isDragging" :x="contextData?.x" :y="contextData?.y"
       :latitude="contextData?.latitude" :longitude="contextData?.longitude" :feature="contextData?.feature"
-      @close="contextData = null" />
+      @close="contextData = null" /> -->
   </div>
 </template>
 
