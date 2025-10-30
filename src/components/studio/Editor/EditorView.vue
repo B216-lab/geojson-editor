@@ -188,14 +188,14 @@ const setupShortCuts = (event) => {
         case "l": editorStore.setActiveTool(MAP_TOOLS.line.id); break;
         case "o": editorStore.setActiveTool(MAP_TOOLS.point.id); break;
         case "m": editorStore.setActiveTool(MAP_TOOLS.measure.id); break;
-        case "s": uiStore.setShowMapSearch(true); break;
+        // case "s": uiStore.setShowMapSearch(true); break;
         case "D": mapStore.setUseExactDimensions(!mapStore.getUseExactDimensions); break;
         case "L": mapStore.setShowMapLabels(!mapStore.getShowMapLabels); break;
         case "Z": editorStore.updateBoundingBox(); break;
       }
     } else {
       switch (event.key) {
-        case "s": uiStore.setShowMapSearch(true); break;
+        // case "s": uiStore.setShowMapSearch(true); break;
         case "D": mapStore.setUseExactDimensions(!mapStore.getUseExactDimensions); break;
         case "L": mapStore.setShowMapLabels(!mapStore.getShowMapLabels); break;
         case "Z": editorStore.updateBoundingBox(); break;

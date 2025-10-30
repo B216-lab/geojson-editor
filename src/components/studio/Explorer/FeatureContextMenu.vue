@@ -1,5 +1,5 @@
 <template>
-  <div class="context-menu" :style="{
+  <div class="context-menu" ref="rootRef" :style="{
     top: `${y + 10}px`,
     left: `${x + 10}px`,
   }">
@@ -15,6 +15,7 @@
 <script setup>
 import { Icon } from "@iconify/vue";
 import { useEditorStore } from "@/stores/editor";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
 defineProps({
   x: {
@@ -49,6 +50,20 @@ const selectOption = (itemId) => {
   }
   emit("close");
 };
+const rootRef = ref(null);
+const onDocumentMouseDown = (event) => {
+  const el = rootRef.value;
+  if (el && !(el.contains && el.contains(event.target))) {
+    emit("close");
+  }
+};
+onMounted(() => {
+  // defer binding to avoid immediate close from opening event
+  setTimeout(() => document.addEventListener('mousedown', onDocumentMouseDown), 0);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', onDocumentMouseDown);
+});
 </script>
 
 <style lang="scss" scoped>

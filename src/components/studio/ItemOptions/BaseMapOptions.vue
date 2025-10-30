@@ -7,7 +7,7 @@
       <h4>Map and Visuals</h4>
     </div>
     <v-section title="Map Style">
-      <div class="map-style-selector">
+      <div class="map-style-selector" ref="selectorRef">
         <div class="dropdown-select" @click="openDropDownOptions">
           <img :src="styles[activeStyle].image" :alt="styles[activeStyle].name" class="thumbnail" />
           <dl>
@@ -50,7 +50,7 @@ import VSection from "@/components/base/v-section.vue";
 import { Icon } from "@iconify/vue";
 import VCheckBox from "@/components/base/v-checkbox.vue";
 import { useMapStore } from "@/stores/map";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 
 const store = useMapStore() as any;
 const styles = computed(() => store.getAllMapStyles);
@@ -60,15 +60,27 @@ const showMapLabels = computed(() => store.getShowMapLabels);
 const getShowPropertiesPopup = computed(() => store.getShowPropertiesPopup);
 const showDropDownOptions = ref(false);
 const setShowMapLabels = store.setShowMapLabels;
-// const getUseExactDimensions = computed(() => getters.getUseExactDimensions);
-// const setUseExactDimensions = actions.setUseExactDimensions;
 const setShowPropertiesPopup = store.setShowPropertiesPopup;
 
-const openDropDownOptions = () => { if (!showDropDownOptions.value) showDropDownOptions.value = true };
+const openDropDownOptions = () => { showDropDownOptions.value = !showDropDownOptions.value };
 const selectActiveMapStyle = (mapStyle: string) => {
   store.setActiveMapStyleId(mapStyle);
   showDropDownOptions.value = false;
 };
+
+const selectorRef = ref<HTMLElement | null>(null);
+const onDocumentClick = (event: MouseEvent) => {
+  const el = selectorRef.value as HTMLElement | null;
+  if (el && !el.contains(event.target as Node)) {
+    showDropDownOptions.value = false;
+  }
+};
+onMounted(() => {
+  document.addEventListener('click', onDocumentClick);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener('click', onDocumentClick);
+});
 </script>
 
 <style lang="scss" scoped>
