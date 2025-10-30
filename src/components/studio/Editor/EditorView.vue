@@ -41,7 +41,6 @@ const setIsDragging = (value) => { isDragging.value = value; };
 
 const tempGeoJson = ref({ type: "FeatureCollection", features: [] });
 const setGeoJson = (updatedData) => {
-  console.log(`setting geojson`);
   editorStore.addGeoJsonFeatures({ features: updatedData.features });
   editorStore.setActiveTool(MAP_TOOLS.select.id);
 };
@@ -65,7 +64,6 @@ const onClickMap = (info, event) => {
 };
 
 const createLayers = async () => {
-  console.log(`Rerendering layers...`);
   const layersToRender = [];
   const geoJsonLayer = new GeoJsonLayer({
     id: "base-geojson-layer",
@@ -135,11 +133,26 @@ const createLayers = async () => {
     getEditHandlePointColor: () => [255, 255, 255],
     getEditHandlePointOutlineColor: () => [66, 135, 245],
     onEdit: ({ editType, updatedData }) => {
-      const updatableEditTypes = ["rotated", "scaled", "finishMovePosition", "translated"];
+      const updatableEditTypes = [
+        "rotated",
+        "scaled",
+        "finishMovePosition",
+        "translated",
+        "removePosition",
+        "removedPosition",
+        "removeVertex",
+        "removedVertex",
+        "addedPosition",
+        "addedVertex",
+        "finishEdit",
+        "update",
+      ];
       if (editType === "addFeature") {
         setGeoJson(updatedData);
         return;
       } else if (updatableEditTypes.indexOf(editType) !== -1) {
+        // reflect immediately in the editable layer
+        tempGeoJson.value = updatedData;
         editorStore.updateFeatureProperties({
           featureId: updatedData?.features[0]?.properties?.id,
           geometry: updatedData?.features[0]?.geometry,
