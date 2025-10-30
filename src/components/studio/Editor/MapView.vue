@@ -61,9 +61,8 @@ export default {
     const map = ref(null);
     const fgmap = ref(null);
     const viewState = ref({
-      latitude: 12.976387,
-      longitude: 77.571529,
-      zoom: 1,
+      latitude: 52.267329, longitude: 104.321593,
+      zoom: 14,
       bearing: 0,
       pitch: 0,
     });
@@ -75,6 +74,7 @@ export default {
         accessToken: ACCESS_TOKEN,
         container: map.value,
         interactive: false,
+        language: 'ru',
         style: activeMapStyleURL.value,
         center: [viewState.value.longitude, viewState.value.latitude],
         zoom: viewState.value.zoom,

@@ -11,7 +11,7 @@ export const MAP_STYLES = [
     { id: 'mapbox-morning-star', name: 'Morning Snow', url: 'mapbox://styles/haxzie/ck0cctlg503xe1co6hmx1kunx' },
 ]
 
-export const DEFAULT_MAP_STYLE = 'mapbox-simple'
+export const DEFAULT_MAP_STYLE = 'mapbox-dark'
 
 export const useMapStore = defineStore('map', {
     state: () => ({
