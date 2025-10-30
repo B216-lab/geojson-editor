@@ -10,6 +10,7 @@ export type SupportedGeometry = GeoPolygon | GeoMultiPolygon | GeoLineString | G
 export interface FeatureProperties {
     id?: string
     name?: string
+    label?: string
     fillColor?: RgbaColor
     lineColor?: RgbaColor
     lineWidth?: number
@@ -54,16 +55,6 @@ export const CASCADABLE_PROPERTIES = [
     'radiusScale',
 ] as const
 
-export const OMIT_PROPERTIES_FOR_EXPORT = [
-    'fillColor',
-    'lineColor',
-    'lineWidth',
-    'widthScale',
-    'hideFill',
-    'hideLine',
-    'isHidden',
-    'shape',
-] as const
 
 export const DISPLAYABLE_DEFAULT_PROPERTIES = [
     'id',

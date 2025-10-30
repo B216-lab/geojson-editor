@@ -1,6 +1,6 @@
 <template>
   <div class="feature-appearences">
-    <v-section v-if="enableFillColor" :title="'Fill Color'">
+    <v-section v-if="enableFillColor" :title="$t('featureAppearence.fillColor')">
       <v-color-picker
         :color="feature.properties.fillColor"
         :hide="feature.properties.hideFill"
@@ -8,7 +8,7 @@
         @onChangeHide="updateHideFill"
       />
     </v-section>
-    <v-section v-if="enableLineProperties" :title="'Line Color'">
+    <v-section v-if="enableLineProperties" :title="$t('featureAppearence.lineColor')">
       <v-color-picker
         :color="feature.properties.lineColor"
         :hide="feature.properties.hideLine"
@@ -16,7 +16,7 @@
         @onChangeHide="updateHideLine"
       />
     </v-section>
-    <v-section v-if="enablePointProperties" :title="'Point Radius'">
+    <v-section v-if="enablePointProperties" :title="$t('featureAppearence.pointRadius')">
       <v-scale-input
         :value="feature.properties.pointRadius"
         :scale="feature.properties.radiusScale"

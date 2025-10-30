@@ -4,15 +4,15 @@
       <div class="icon">
         <Icon icon="mdi:map-outline" width="18" height="18" />
       </div>
-      <h4>Map and Visuals</h4>
+      <h4>{{ $t('itemOptions.visuals') }}</h4>
     </div>
-    <v-section title="Map Style">
+    <v-section :title="$t('itemOptions.mapStyle')">
       <div class="map-style-selector" ref="selectorRef">
         <div class="dropdown-select" @click="openDropDownOptions">
           <img :src="styles[activeStyle].image" :alt="styles[activeStyle].name" class="thumbnail" />
           <dl>
-            <dt>{{ styles[activeStyle].name }}</dt>
-            <dd>Mapbox style</dd>
+            <dt>{{ $t(`mapboxStyles.${styles[activeStyle].name}`) }}</dt>
+            <dd>Mapbox {{ $t('style') }}</dd>
           </dl>
           <Icon icon="mdi:chevron-down" :class="['icon', { rotate: showDropDownOptions }]" width="18" height="18" />
         </div>
@@ -23,23 +23,23 @@
           <div v-for="item in styleItems" :key="item.id" class="item" @click="selectActiveMapStyle(item.id)">
             <img :src="item.image" :alt="item.name" class="thumbnail" />
             <dl>
-              <dt>{{ item.name }}</dt>
-              <dd>Mapbox style</dd>
+              <dt>{{ $t(`mapboxStyles.${item.name}`) }}</dt>
+              <dd>Mapbox {{ $t('style') }}</dd>
             </dl>
           </div>
         </div>
       </div>
     </v-section>
-    <v-section title="Map Labels">
+    <v-section>
       <div class="item-row">
         <VCheckBox :modelValue="showMapLabels" @update:modelValue="(value) => setShowMapLabels(value)"
-          label="Show Map Labels" />
+          :label="$t('itemOptions.showMapLabels')" />
       </div>
     </v-section>
-    <v-section title="Visualization">
+    <v-section>
       <div class="item-row">
         <VCheckBox :modelValue="getShowPropertiesPopup" @update:modelValue="(value) => setShowPropertiesPopup(value)"
-          label="Show Properties on Hover" />
+          :label="$t('itemOptions.showPropertiesOnHover')" />
       </div>
     </v-section>
   </div>

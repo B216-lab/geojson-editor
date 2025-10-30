@@ -1,0 +1,51 @@
+{
+    "polygon": "Многоугольник",
+    "rectangle": "Прямоугольник",
+    "ellipse": "Эллипс",
+    "style": "Стиль",
+    "lineString": "Поли-линия",
+    "point": "Точка",
+    "measure": "Измерение",
+    "select": "Выбор",
+    "explorer": {
+        "empty_description": "Нажмите на инструменты вверху, чтобы начать создание фигур",
+        "features": "Features"
+    },
+    "itemOptions": {
+        "visuals": "Внешний вид",
+        "mapStyle": "Стиль Карты",
+        "showMapLabels": "Показать метки карты",
+        "showPropertiesOnHover": "Свойства при наведении"
+    },
+    "featureAppearence": {
+        "fillColor": "Цвет заливки",
+        "lineColor": "Цвет линии",
+        "pointRadius": "Радиус точки",
+        "radiusScale": "Масштаб радиуса"
+    },
+    "featureDetails": {
+        "measures": "Измерения",
+        "customProperties": "Свойства",
+        "addProperty": "Добавить свойство"
+    },
+    "mapboxStyles": {
+        "simple": "Простой",
+        "satellite-streets": "Спутник",
+        "black-and-white": "Черно-белый",
+        "lights": "Светлый",
+        "dark": "Темный",
+        "frozen-city": "Холодный",
+        "morning-star": "Утренний"
+    },
+    "featureContextMenu": {
+        "copyCoordinates": "Координаты",
+        "openIn2gis": "Открыть в 2GIS",
+        "transform": "Преобразовать",
+        "modify": "Изменить",
+        "delete": "Удалить"
+    },
+    "toast": {
+        "coordinatesCopied": "Координаты скопированы",
+        "failedToCopyCoordinates": "Не удалось скопировать координаты"
+    }
+}

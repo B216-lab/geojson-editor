@@ -1,6 +1,6 @@
 <template>
   <div class="feature-details">
-    <v-section title="Measures" bold>
+    <v-section :title="$t('featureDetails.measures')" bold>
       <div class="metadata uneditable">
         <dl v-for="itemKey in Object.keys(defaultProperties)" :key="itemKey" class="item">
           <dt>{{ defaultProperties[itemKey].name }}</dt>
@@ -8,7 +8,7 @@
         </dl>
       </div>
     </v-section>
-    <v-section title="Custom Properties" bold>
+    <v-section :title="$t('featureDetails.customProperties')" bold>
       <template v-if="isShapesEditable" v-slot:header>
         <button class="add-btn" @click="addNewProperty">
           <Icon icon="mdi:plus" width="20" height="20" />

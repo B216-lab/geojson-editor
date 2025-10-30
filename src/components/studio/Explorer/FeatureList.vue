@@ -9,9 +9,7 @@
     </div>
     <div v-else class="not-found">
       <p class="description">
-        Click on the <strong>tools</strong> on top to start creating features or
-        drag and drop a <strong>.geojson</strong>, <strong>.json</strong>or <strong>.csv</strong> file
-        to start
+        {{ $t('explorer.empty_description') }}
       </p>
     </div>
   </div>

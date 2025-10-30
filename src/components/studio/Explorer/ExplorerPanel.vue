@@ -3,7 +3,7 @@
     <div class="header">
       <h4 class="title">
         <Icon icon="mdi:layers-outline" class="icon" width="18" height="18" />
-        <span>Features</span>
+        <span>{{ $t('explorer.features') }}</span>
       </h4>
     </div>
     <feature-list />

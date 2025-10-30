@@ -13,19 +13,19 @@ import {
 } from '@deck.gl-community/editable-layers'
 
 export const MAP_TOOLS = {
-    select: { id: 'select', name: 'Select Tool', description: '', icon: 'mdi:cursor-default-outline', cursor: 'default', shortcut: 'v', mode: ViewMode },
-    polygon: { id: 'polygon', name: 'Polygon Tool', description: '', icon: 'mdi:shape-outline', cursor: 'crosshair', shortcut: 'p', mode: DrawPolygonMode },
-    rectangle: { id: 'rectangle', name: 'Rectangle Tool', description: '', icon: 'mdi:shape-outline', cursor: 'crosshair', shortcut: 'r', mode: DrawRectangleMode },
-    ellipse: { id: 'ellipse', name: 'Ellipse Tool', description: '', icon: 'mdi:shape-outline', cursor: 'crosshair', shortcut: 'e', mode: DrawCircleFromCenterMode },
-    line: { id: 'line', name: 'LineString Tool', description: '', icon: 'mdi:vector-line', cursor: 'crosshair', shortcut: 'l', mode: DrawLineStringMode },
-    point: { id: 'point', name: 'Point Tool', description: '', icon: 'mdi:map-marker-outline', cursor: 'crosshair', shortcut: 'o', mode: DrawPointMode },
+    select: { id: 'select', name: 'select', description: '', icon: 'mdi:cursor-default-outline', cursor: 'default', shortcut: 'v', mode: ViewMode },
+    polygon: { id: 'polygon', name: 'polygon', description: '', icon: 'mdi:shape-outline', cursor: 'crosshair', shortcut: 'p', mode: DrawPolygonMode },
+    rectangle: { id: 'rectangle', name: 'rectangle', description: '', icon: 'mdi:shape-outline', cursor: 'crosshair', shortcut: 'r', mode: DrawRectangleMode },
+    ellipse: { id: 'ellipse', name: 'ellipse', description: '', icon: 'mdi:shape-outline', cursor: 'crosshair', shortcut: 'e', mode: DrawCircleFromCenterMode },
+    line: { id: 'line', name: 'lineString', description: '', icon: 'mdi:vector-line', cursor: 'crosshair', shortcut: 'l', mode: DrawLineStringMode },
+    point: { id: 'point', name: 'point', description: '', icon: 'mdi:map-marker-outline', cursor: 'crosshair', shortcut: 'o', mode: DrawPointMode },
     // NOTE: measuring is approximated with a line draw mode; measurement display handled elsewhere
     // measure: { id: 'measure', name: 'Measure Tool', description: '', icon: 'mdi:ruler', cursor: 'crosshair', shortcut: 'm', mode: DrawLineStringMode },
 } as const
 
 export const EDITING_MODE = {
-    transform: { id: 'transform', name: 'Transform', cursor: 'crosshair', mode: TransformMode },
-    modify: { id: 'modify', name: 'Modify', cursor: 'crosshair', mode: ModifyMode },
+    transform: { id: 'transform', name: 'transform', cursor: 'crosshair', mode: TransformMode },
+    modify: { id: 'modify', name: 'modify', cursor: 'crosshair', mode: ModifyMode },
 } as const
 
 /**

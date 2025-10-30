@@ -11,7 +11,7 @@
           transform: `translateX(${activeHoverItemIndex * 42}px)`,
         }">
           <h4>
-            {{ hoveredTool.name }}
+            {{ $t(hoveredTool.name) }}
             <span class="shortcut">{{ hoveredTool.shortcut }}</span>
           </h4>
           <p>

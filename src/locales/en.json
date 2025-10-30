@@ -1,0 +1,51 @@
+{
+    "polygon": "Polygon",
+    "rectangle": "Rectangle",
+    "ellipse": "Ellipse",
+    "style": "Style",
+    "lineString": "Polyline",
+    "point": "Point",
+    "measure": "Measure",
+    "select": "Select",
+    "explorer": {
+        "empty_description": "Click the tools above to start creating shapes",
+        "features": "Features"
+    },
+    "itemOptions": {
+        "visuals": "Visuals",
+        "mapStyle": "Map Style",
+        "showMapLabels": "Show map labels",
+        "showPropertiesOnHover": "Show properties on hover"
+    },
+    "featureAppearence": {
+        "fillColor": "Fill color",
+        "lineColor": "Line color",
+        "pointRadius": "Point radius",
+        "radiusScale": "Radius scale"
+    },
+    "featureDetails": {
+        "measures": "Measures",
+        "customProperties": "Properties",
+        "addProperty": "Add property"
+    },
+    "mapboxStyles": {
+        "simple": "Simple",
+        "satellite-streets": "Satellite",
+        "black-and-white": "Black and white",
+        "lights": "Light",
+        "dark": "Dark",
+        "frozen-city": "Frozen",
+        "morning-star": "Morning"
+    },
+    "featureContextMenu": {
+        "copyCoordinates": "Copy coordinates",
+        "openIn2gis": "Open in 2GIS",
+        "transform": "Transform",
+        "modify": "Edit",
+        "delete": "Delete"
+    },
+    "toast": {
+        "coordinatesCopied": "Coordinates copied",
+        "failedToCopyCoordinates": "Failed to copy coordinates"
+    }
+} 

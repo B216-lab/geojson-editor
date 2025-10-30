@@ -1,12 +1,21 @@
 <template>
-  <div class="context-menu" ref="rootRef" :style="{
-    top: `${y + 10}px`,
-    left: `${x + 10}px`,
-  }">
+  <div
+    class="context-menu"
+    ref="rootRef"
+    :style="{
+      top: `${y + 10}px`,
+      left: `${x + 10}px`,
+    }"
+  >
     <div class="options">
-      <div class="option" v-for="item in options" :key="item.id" @click="selectOption(item.id)">
+      <div
+        class="option"
+        v-for="item in options"
+        :key="item.id"
+        @click="selectOption(item.id)"
+      >
         <Icon :icon="item.icon" width="18" height="18" class="icon" />
-        {{ item.name }}
+        {{ $t(item.name) }}
       </div>
     </div>
   </div>
@@ -37,7 +46,7 @@ const options = [
   {
     id: "delete",
     icon: "mdi:trash-can-outline",
-    name: "Delete",
+    name: "featureContextMenu.delete",
   },
 ];
 
@@ -59,10 +68,13 @@ const onDocumentMouseDown = (event) => {
 };
 onMounted(() => {
   // defer binding to avoid immediate close from opening event
-  setTimeout(() => document.addEventListener('mousedown', onDocumentMouseDown), 0);
+  setTimeout(
+    () => document.addEventListener("mousedown", onDocumentMouseDown),
+    0,
+  );
 });
 onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', onDocumentMouseDown);
+  document.removeEventListener("mousedown", onDocumentMouseDown);
 });
 </script>
 

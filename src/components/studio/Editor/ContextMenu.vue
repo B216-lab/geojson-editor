@@ -1,18 +1,31 @@
 <template>
-  <div class="context-menu" ref="rootRef" :style="{
-    top: `${y + 10}px`,
-    left: `${x + 10}px`,
-  }">
+  <div
+    class="context-menu"
+    ref="rootRef"
+    :style="{
+      top: `${y + 10}px`,
+      left: `${x + 10}px`,
+    }"
+  >
     <div v-if="feature" class="header">
       <div class="icon">
-        <Icon :icon="iconForShape(feature.geometry.type)" width="18" height="18" />
+        <Icon
+          :icon="iconForShape(feature.geometry.type)"
+          width="18"
+          height="18"
+        />
       </div>
       <h4>{{ feature.properties.name }}</h4>
     </div>
     <div class="options">
-      <div class="option" v-for="item in options" :key="item.id" @click="selectOption(item.id)">
+      <div
+        class="option"
+        v-for="item in options"
+        :key="item.id"
+        @click="selectOption(item.id)"
+      >
         <Icon :icon="item.icon" width="18" height="18" class="icon" />
-        {{ item.name }}
+        {{ $t(item.name) }}
       </div>
     </div>
   </div>
@@ -58,32 +71,52 @@ const accessFlags = computed(() => uiStore.getAccessFlags);
 const options = computed(() => [
   ...(props.feature && accessFlags.value.isShapesEditable
     ? [
-      ...(props.feature.geometry.type !== FEATURE_TYPES.Point
-        ? [
-          { id: "modify", icon: "mdi:vector-polyline-edit", name: "Modify" },
-          { id: "transform", icon: "mdi:axis-arrow", name: "Transform" },
-        ]
-        : []),
-      { id: "delete", icon: "mdi:trash-can-outline", name: "Delete" },
-    ]
+        ...(props.feature.geometry.type !== FEATURE_TYPES.Point
+          ? [
+              {
+                id: "modify",
+                icon: "mdi:vector-polyline-edit",
+                name: "featureContextMenu.modify",
+              },
+              {
+                id: "transform",
+                icon: "mdi:axis-arrow",
+                name: "featureContextMenu.transform",
+              },
+            ]
+          : []),
+        {
+          id: "delete",
+          icon: "mdi:trash-can-outline",
+          name: "featureContextMenu.delete",
+        },
+      ]
     : []),
   ...(props.latitude && props.longitude
     ? [
-      { id: "copycords", icon: "mdi:content-copy", name: "Copy Coordinates" },
-      {
-        id: "openIn2gis",
-        icon: "lets-icons:map-fill",
-        name: "Open in 2GIS",
-        link: `https://2gis.ru/map/${props.latitude},${props.longitude}`,
-      },
-    ]
+        {
+          id: "copycords",
+          icon: "mdi:content-copy",
+          name: "featureContextMenu.copyCoordinates",
+        },
+        {
+          id: "openIn2gis",
+          icon: "lets-icons:map-fill",
+          name: "featureContextMenu.openIn2gis",
+          link: `https://2gis.ru/map/${props.latitude},${props.longitude}`,
+        },
+      ]
     : []),
 ]);
 
 const copyCoordinates = async () => {
   try {
-    await navigator?.clipboard?.writeText(`${props.latitude}, ${props.longitude}`);
-    toast.success("Coordinates copied", { description: `${props.latitude}, ${props.longitude}` });
+    await navigator?.clipboard?.writeText(
+      `${props.latitude}, ${props.longitude}`,
+    );
+    toast.success("Coordinates copied", {
+      description: `${props.latitude}, ${props.longitude}`,
+    });
   } catch (e) {
     toast.error("Failed to copy coordinates");
   }
@@ -95,7 +128,7 @@ const openIn2gis = () => {
   const lat = props.latitude;
   const coordParam = `${lon}%2C${lat}`;
   const url = `https://2gis.ru/irkutsk/geo/70030076318974799/${coordParam}?m=${coordParam}%2F${zoom}`;
-  window.open(url, '_blank');
+  window.open(url, "_blank");
   return;
 };
 
@@ -140,10 +173,13 @@ const onDocumentMouseDown = (event) => {
   }
 };
 onMounted(() => {
-  setTimeout(() => document.addEventListener('mousedown', onDocumentMouseDown), 0);
+  setTimeout(
+    () => document.addEventListener("mousedown", onDocumentMouseDown),
+    0,
+  );
 });
 onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', onDocumentMouseDown);
+  document.removeEventListener("mousedown", onDocumentMouseDown);
 });
 </script>
 
