@@ -6,10 +6,10 @@
     <v-dropdown :value="scale" :options="scaleOptions" @select="updateScale" width="100px" />
     <input ref="widthInput" type="text" name="widthInput" :value="value" class="width-input" @blur="updateLineWidth"
       placeholder="0" />
-    <div class="slider">
+    <!-- <div class="slider">
       <slider v-model="width" color="var(--color-primary)" track-color="var(--color-secondary-light)" :tooltip="false"
         :max="1000" />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -17,12 +17,12 @@
 import { Icon } from "@iconify/vue";
 import VDropdown from "@/components/base/v-dropdown.vue";
 import { DISTANCE_SCALE } from "@/utils/constants";
-import slider from "vue3-slider";
+// import slider from "vue3-slider";
 import { computed, ref } from "vue";
 export default {
   components: {
     Icon,
-    slider,
+    // slider,
     VDropdown,
   },
   props: {
@@ -95,7 +95,6 @@ export default {
     display: flex;
     width: 24px;
     height: 24px;
-    // background: var(--color-secondary-light);
     align-items: center;
     justify-content: center;
     border-radius: 2px;
@@ -120,10 +119,10 @@ export default {
     }
   }
 
-  .slider {
-    flex: 2;
-    margin-left: 10px;
-    z-index: 99 !important;
-  }
+  // .slider {
+  //   flex: 2;
+  //   margin-left: 10px;
+  //   z-index: 99 !important;
+  // }
 }
 </style>
