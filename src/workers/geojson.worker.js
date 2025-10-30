@@ -1,4 +1,4 @@
-import { expose } from "comlink";
+/* import { expose } from "comlink";
 import bbox from "@turf/bbox";
 
 const getGeoJsonBoundingBox = (geoJson) => {
@@ -16,3 +16,4 @@ const getGeoJsonBoundingBox = (geoJson) => {
 
 
 expose({ getGeoJsonBoundingBox });
+ */
