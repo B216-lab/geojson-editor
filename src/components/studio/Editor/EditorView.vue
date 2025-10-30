@@ -2,6 +2,7 @@
   <div class="editor-view">
     <map-view @onClick="onClickMap" @onDragStart="() => setIsDragging(true)" @onDragEnd="() => setIsDragging(false)"
       :layers="layers" :cursor="mapCursor" />
+    <v-progress-view v-if="!isReady" />
     <GeoPopup v-if="popupData && !contextData && !isDragging" :x="popupData?.x" :y="popupData?.y"
       :feature="popupData?.feature" :showProperties="showProperties" />
     <ContextMeu v-if="contextData && !isDragging" :x="contextData?.x" :y="contextData?.y"
@@ -17,6 +18,7 @@ import GeoPopup from "./GeoPopup.vue";
 import ContextMeu from "./ContextMenu.vue";
 import { EditableGeoJsonLayer } from "@deck.gl-community/editable-layers";
 import { GeoJsonLayer, IconLayer } from "@deck.gl/layers";
+import VProgressView from "@/components/base/v-progress-view.vue";
 import { useEditorStore, EDITING_MODE, MAP_TOOLS } from "@/stores/editor";
 import { useMapStore } from "@/stores/map";
 import { useUIStore } from "@/stores/ui";
@@ -42,6 +44,7 @@ const setIsDragging = (value) => { isDragging.value = value; };
 const mapCursor = computed(() => (hoveredFeatureId.value ? 'pointer' : (activeTool.value?.cursor || 'default')));
 
 const tempGeoJson = ref({ type: "FeatureCollection", features: [] });
+const isReady = ref(false);
 const setGeoJson = (updatedData) => {
   editorStore.addGeoJsonFeatures({ features: updatedData.features });
   editorStore.setActiveTool(MAP_TOOLS.select.id);
@@ -190,6 +193,7 @@ const createLayers = async () => {
     layersToRender.push(iconLayer);
   }
   layers.value = layersToRender;
+  if (!isReady.value) isReady.value = true;
 };
 
 const setupShortCuts = (event) => {
