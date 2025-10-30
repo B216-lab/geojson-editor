@@ -19,7 +19,6 @@ import { computed, defineAsyncComponent, onBeforeMount, onBeforeUnmount, onMount
 import { useUIStore } from "@/stores/ui";
 import { useMapStore } from "@/stores/map";
 import { useEditorStore } from "@/stores/editor";
-import { useRoute } from "vue-router";
 
 const EditorView = defineAsyncComponent({
   loader: () => import("@/components/studio/Editor/EditorView.vue"),
@@ -31,8 +30,6 @@ const uiStore = useUIStore();
 const mapStore = useMapStore();
 const editorStore = useEditorStore();
 const isLoading = ref(false);
-const route = useRoute();
-const isPreviewMode = computed(() => !!route.query?.preview);
 
 const initializeProject = async () => {
   isLoading.value = true;
