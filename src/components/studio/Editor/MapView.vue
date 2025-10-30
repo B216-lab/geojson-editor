@@ -24,7 +24,9 @@
 import { Map } from "mapbox-gl";
 import VDeckgl from "@/components/base/v-deckgl.vue";
 import { computed, onMounted, watch, ref, nextTick } from "vue";
-import { useStoreModule } from "@/composables/useStoreModule.js";
+import { useMapStore } from "@/stores/map";
+import { useEditorStore } from "@/stores/editor";
+import { useUIStore } from "@/stores/ui";
 import { WebMercatorViewport, MapController } from "@deck.gl/core";
 import Feature, { FEATURE_TYPES } from "@/models/Feature.model";
 import MapControls from "./MapControls.vue";
@@ -37,15 +39,15 @@ const props = defineProps({
 });
 defineEmits(["onClick", "onDrag", "onDragStart", "onDragEnd"]);
 
-const { getters } = useStoreModule("map");
-const { getters: editorGetters, actions } = useStoreModule("editor");
-const UIStore = useStoreModule("UI");
+const mapStore = useMapStore();
+const editorStore = useEditorStore();
+const uiStore = useUIStore();
 const ACCESS_TOKEN = import.meta.env.VITE_APP_MAPBOX_TOKEN;
-const activeMapStyleURL = computed(() => getters.getActiveMapStyleURL);
-const showMapLabels = computed(() => getters.getShowMapLabels);
-const focusedFeature = computed(() => editorGetters.getFocusedFeature);
-const boundingBox = computed(() => editorGetters.getBoundingBox);
-const setShowMapSearch = UIStore.actions.setShowMapSearch;
+const activeMapStyleURL = computed(() => mapStore.getActiveMapStyleURL);
+const showMapLabels = computed(() => mapStore.getShowMapLabels);
+const focusedFeature = computed(() => editorStore.getFocusedFeature);
+const boundingBox = computed(() => editorStore.getBoundingBox);
+const setShowMapSearch = uiStore.setShowMapSearch;
 const deckContainerRef = ref(null);
 const map = ref(null);
 const fgmap = ref(null);
@@ -120,7 +122,7 @@ watch(focusedFeature, (feature) => {
       console.log(`Unable to set the bounding box`, feature);
       console.error(error);
     }
-    actions.setFocusedFeatureId(null);
+    editorStore.setFocusedFeatureId(null);
   }
 });
 
@@ -151,7 +153,7 @@ const zoomOut = () => {
   updateViewState({ ...viewState.value, zoom: Math.max(viewState.value.zoom - 1, 1) });
 };
 
-const fitScreen = () => { actions.updateBoundingBox(); };
+const fitScreen = () => { editorStore.updateBoundingBox(); };
 
 watch(activeMapStyleURL, () => {
   if (baseMap) {

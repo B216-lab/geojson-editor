@@ -21,7 +21,7 @@
 <script setup>
 import { Icon } from "@iconify/vue";
 import { computed, ref, watch } from "vue";
-import { useStoreModule } from "@/composables/useStoreModule.js";
+import { useEditorStore } from "@/stores/editor";
 import { FEATURE_TYPES } from '@/models/Feature.model';
 
 const props = defineProps({
@@ -62,30 +62,30 @@ const readonly = ref(true);
 const featureNameInput = ref(null);
 const featureName = ref(props.feature.properties.name);
 const isHidden = computed(() => props.feature.properties.isHidden);
-const { actions } = useStoreModule("editor");
+const editorStore = useEditorStore();
 
 const setAsActiveFeature = (event) => {
   const { metaKey, ctrlKey, shiftKey } = event;
   if (shiftKey) {
-    actions.customSelectFeatureId({
+    editorStore.customSelectFeatureId({
       featureId: props.feature.properties.id,
       isMultiSelect: true,
     });
   } else if (metaKey || ctrlKey) {
-    actions.customSelectFeatureId({
+    editorStore.customSelectFeatureId({
       featureId: props.feature.properties.id,
       deselect: props.isSelectedFeature,
       isMultiSelect: false,
     });
   } else {
-    actions.setSelectedFeatureIds([props.feature.properties.id]);
+    editorStore.setSelectedFeatureIds([props.feature.properties.id]);
   }
 };
 
 const renameFeature = () => {
   readonly.value = true;
   if (featureName.value) {
-    actions.updateFeatureProperties({
+    editorStore.updateFeatureProperties({
       featureId: props.feature.properties.id,
       properties: { name: featureName.value },
     });
@@ -95,14 +95,14 @@ const renameFeature = () => {
 };
 
 const toggleVisibility = () => {
-  actions.updateFeatureProperties({
+  editorStore.updateFeatureProperties({
     featureId: props.feature.properties.id,
     properties: { isHidden: !isHidden.value },
   });
 };
 
 const focusFeature = () => {
-  actions.setFocusedFeatureId(props.feature.properties.id);
+  editorStore.setFocusedFeatureId(props.feature.properties.id);
 };
 
 const setEditable = () => {

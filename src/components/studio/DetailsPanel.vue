@@ -9,14 +9,15 @@ import BaseMapOptions from "@/components/studio/ItemOptions/BaseMapOptions.vue";
 import FeatureOptions from "@/components/studio/ItemOptions/FeatureOptions.vue";
 import MultiFeatureOptions from "@/components/studio/ItemOptions/MultiFeatureOptions.vue";
 
-import { useStoreModule } from "@/composables/useStoreModule";
+import { useEditorStore } from "@/stores/editor";
+import { useUIStore } from "@/stores/ui";
 import { computed } from "vue";
 import { FEATURE_TYPES } from "@/models/Feature.model";
 
-const { getters } = useStoreModule("editor");
-const UIStore = useStoreModule("UI");
-const isShapesEditable = computed(() => UIStore.getters.getAccessFlags.isShapesEditable);
-const selectedItems = computed(() => getters.getSelectedFeatures);
+const editorStore = useEditorStore();
+const uiStore = useUIStore();
+const isShapesEditable = computed(() => uiStore.getAccessFlags.isShapesEditable);
+const selectedItems = computed(() => editorStore.getSelectedFeatures);
 const optionsComponent = computed(() => {
   if (selectedItems.value?.length > 1 && isShapesEditable.value) {
     return MultiFeatureOptions;

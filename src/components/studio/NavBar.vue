@@ -28,14 +28,15 @@
 import { Icon } from "@iconify/vue";
 import { MAP_TOOLS } from "@/stores/editor";
 import { computed, ref } from "vue";
-import { useStoreModule } from "@/composables/useStoreModule.js";
+import { useEditorStore } from "@/stores/editor";
+import { useUIStore } from "@/stores/ui";
 
-const { getters, actions } = useStoreModule("editor") as any;
-const UIStore = useStoreModule("UI") as any;
-const accessFlags = computed(() => UIStore.getters.getAccessFlags);
-const activeTool = computed(() => getters.getActiveTool);
+const editorStore = useEditorStore() as any;
+const uiStore = useUIStore() as any;
+const accessFlags = computed(() => uiStore.getAccessFlags);
+const activeTool = computed(() => editorStore.getActiveTool);
 const tools = Object.values(MAP_TOOLS);
-const setActiveTool = actions.setActiveTool;
+const setActiveTool = editorStore.setActiveTool;
 
 const iconForTool = (toolId: string) => {
   switch (toolId) {

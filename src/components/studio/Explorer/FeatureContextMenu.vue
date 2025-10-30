@@ -14,7 +14,7 @@
 
 <script setup>
 import { Icon } from "@iconify/vue";
-import { useStoreModule } from "@/composables/useStoreModule.js";
+import { useEditorStore } from "@/stores/editor";
 
 defineProps({
   x: {
@@ -40,11 +40,11 @@ const options = [
   },
 ];
 
-const { actions } = useStoreModule("editor");
+const editorStore = useEditorStore();
 const selectOption = (itemId) => {
   switch (itemId) {
     case "delete":
-      actions.deleteSelectedFeatures();
+      editorStore.deleteSelectedFeatures();
       break;
   }
   emit("close");

@@ -16,7 +16,10 @@ import NavBar from "@/components/studio/NavBar.vue";
 import ExplorerPanel from "@/components/studio/Explorer/ExplorerPanel.vue";
 import DetailsPanel from "@/components/studio/DetailsPanel.vue";
 import { computed, defineAsyncComponent, onBeforeMount, onBeforeUnmount, onMounted, ref } from "vue";
-import { useStoreModule } from "@/composables/useStoreModule";
+import { useUIStore } from "@/stores/ui";
+import { useMapStore } from "@/stores/map";
+import { useEditorStore } from "@/stores/editor";
+import { useProjectsStore } from "@/stores/projects";
 import { useRoute } from "vue-router";
 
 const EditorView = defineAsyncComponent({
@@ -25,17 +28,17 @@ const EditorView = defineAsyncComponent({
 });
 
 const studioLayoutRef = ref(null);
-const UIStore = useStoreModule("UI");
-const MapStore = useStoreModule("map");
-const EditorStore = useStoreModule("editor");
-const ProjectStore = useStoreModule("projects");
+const uiStore = useUIStore();
+const mapStore = useMapStore();
+const editorStore = useEditorStore();
+const projectsStore = useProjectsStore();
 const isLoading = ref(false);
 const route = useRoute();
 const isPreviewMode = computed(() => !!route.query?.preview);
 
 const initializeProject = async () => {
   isLoading.value = true;
-  await ProjectStore.actions.initializeProject();
+  await projectsStore.initializeProject();
   isLoading.value = false;
 };
 
@@ -44,8 +47,8 @@ onMounted(() => {
 });
 
 const resetSotres = () => {
-  MapStore.actions.reset();
-  EditorStore.actions.reset();
+  mapStore.reset();
+  editorStore.reset();
 };
 onBeforeUnmount(resetSotres);
 onBeforeMount(resetSotres);

@@ -17,23 +17,24 @@ import GeoPopup from "./GeoPopup.vue";
 import ContextMeu from "./ContextMenu.vue";
 import { EditableGeoJsonLayer } from "@deck.gl-community/editable-layers";
 import { GeoJsonLayer, IconLayer } from "@deck.gl/layers";
-import { useStoreModule } from "@/composables/useStoreModule.js";
-import { EDITING_MODE, MAP_TOOLS } from "@/stores/editor";
+import { useEditorStore, EDITING_MODE, MAP_TOOLS } from "@/stores/editor";
+import { useMapStore } from "@/stores/map";
+import { useUIStore } from "@/stores/ui";
 import { DISTANCE_SCALE } from "@/utils/constants";
 
-const { getters, actions } = useStoreModule("editor");
-const mapStore = useStoreModule("map");
-const UIStore = useStoreModule("UI");
-const accessFlags = computed(() => UIStore.getters.getAccessFlags);
-const geojson = computed(() => getters.getGeoJson);
-const activeTool = computed(() => MAP_TOOLS[getters.getActiveTool]);
-const activeMode = computed(() => MAP_TOOLS[getters.getActiveTool].mode);
-const hoveredFeatureId = computed(() => getters.getHoveredFeatureId);
-const selectedFeatures = computed(() => getters.getSelectedFeatures);
-const showProperties = computed(() => mapStore.getters.getShowPropertiesPopup);
-const getUseExactDimensions = computed(() => mapStore.getters.getUseExactDimensions);
-const temporaryMapMarker = computed(() => mapStore.getters.getTemporarySearchMarkerLocation);
-const activeEditMode = computed(() => getters.getActiveEditMode && EDITING_MODE[getters.getActiveEditMode]?.mode);
+const editorStore = useEditorStore();
+const mapStore = useMapStore();
+const uiStore = useUIStore();
+const accessFlags = computed(() => uiStore.getAccessFlags);
+const geojson = computed(() => editorStore.getGeoJson);
+const activeTool = computed(() => MAP_TOOLS[editorStore.getActiveTool]);
+const activeMode = computed(() => MAP_TOOLS[editorStore.getActiveTool].mode);
+const hoveredFeatureId = computed(() => editorStore.getHoveredFeatureId);
+const selectedFeatures = computed(() => editorStore.getSelectedFeatures);
+const showProperties = computed(() => mapStore.getShowPropertiesPopup);
+const getUseExactDimensions = computed(() => mapStore.getUseExactDimensions);
+const temporaryMapMarker = computed(() => mapStore.getTemporarySearchMarkerLocation);
+const activeEditMode = computed(() => editorStore.getActiveEditMode && EDITING_MODE[editorStore.getActiveEditMode]?.mode);
 
 const isDragging = ref(false);
 const setIsDragging = (value) => { isDragging.value = value; };
@@ -41,8 +42,8 @@ const setIsDragging = (value) => { isDragging.value = value; };
 const tempGeoJson = ref({ type: "FeatureCollection", features: [] });
 const setGeoJson = (updatedData) => {
   console.log(`setting geojson`);
-  actions.addGeoJsonFeatures({ features: updatedData.features });
-  actions.setActiveTool(MAP_TOOLS.select.id);
+  editorStore.addGeoJsonFeatures({ features: updatedData.features });
+  editorStore.setActiveTool(MAP_TOOLS.select.id);
 };
 const layers = ref([]);
 const popupData = ref(null);
@@ -51,7 +52,7 @@ const contextData = ref(null);
 const onClickMap = (info, event) => {
   if (info?.index === -1) {
     if (selectedFeatures?.value?.length) {
-      actions.setActiveEditMode({ mode: null, featureId: null });
+      editorStore.setActiveEditMode({ mode: null, featureId: null });
     }
     if (activeTool.value.id === MAP_TOOLS.select.id && event.rightButton) {
       const { x, y } = event.offsetCenter;
@@ -86,11 +87,11 @@ const createLayers = async () => {
         const feature = info.object;
         popupData.value = { x, y, feature };
         if (feature?.properties?.id !== hoveredFeatureId.value) {
-          actions.setHoveredFeatureId(feature.properties.id);
+          editorStore.setHoveredFeatureId(feature.properties.id);
         }
       } else {
         popupData.value = null;
-        actions.setHoveredFeatureId(null);
+        editorStore.setHoveredFeatureId(null);
       }
     },
     onClick: (info, event) => {
@@ -102,9 +103,9 @@ const createLayers = async () => {
           const { srcEvent } = event;
           const { ctrlKey, metaKey, shiftKey } = srcEvent;
           if (ctrlKey || metaKey || shiftKey) {
-            actions.customSelectFeatureId({ featureId: info.object.properties.id, isMultiSelect: false });
+            editorStore.customSelectFeatureId({ featureId: info.object.properties.id, isMultiSelect: false });
           } else {
-            actions.setActiveEditMode({ mode: null, featureId: info.object.properties.id });
+            editorStore.setActiveEditMode({ mode: null, featureId: info.object.properties.id });
           }
         }
       } else if (activeTool.value.id === "select" && event.rightButton) {
@@ -139,7 +140,7 @@ const createLayers = async () => {
         setGeoJson(updatedData);
         return;
       } else if (updatableEditTypes.indexOf(editType) !== -1) {
-        actions.updateFeatureProperties({
+        editorStore.updateFeatureProperties({
           featureId: updatedData?.features[0]?.properties?.id,
           geometry: updatedData?.features[0]?.geometry,
           shouldSync: true,
@@ -180,24 +181,24 @@ const setupShortCuts = (event) => {
   if (document.activeElement.tagName.toLowerCase() !== "input") {
     if (accessFlags.value.isShapesEditable) {
       switch (event.key) {
-        case "v": actions.setActiveTool(MAP_TOOLS.select.id); break;
-        case "p": actions.setActiveTool(MAP_TOOLS.polygon.id); break;
-        case "r": actions.setActiveTool(MAP_TOOLS.rectangle.id); break;
-        case "e": actions.setActiveTool(MAP_TOOLS.ellipse.id); break;
-        case "l": actions.setActiveTool(MAP_TOOLS.line.id); break;
-        case "o": actions.setActiveTool(MAP_TOOLS.point.id); break;
-        case "m": actions.setActiveTool(MAP_TOOLS.measure.id); break;
-        case "s": UIStore.actions.setShowMapSearch(true); break;
-        case "D": mapStore.actions.setUseExactDimensions(!mapStore.getters.getUseExactDimensions); break;
-        case "L": mapStore.actions.setShowMapLabels(!mapStore.getters.getShowMapLabels); break;
-        case "Z": actions.updateBoundingBox(); break;
+        case "v": editorStore.setActiveTool(MAP_TOOLS.select.id); break;
+        case "p": editorStore.setActiveTool(MAP_TOOLS.polygon.id); break;
+        case "r": editorStore.setActiveTool(MAP_TOOLS.rectangle.id); break;
+        case "e": editorStore.setActiveTool(MAP_TOOLS.ellipse.id); break;
+        case "l": editorStore.setActiveTool(MAP_TOOLS.line.id); break;
+        case "o": editorStore.setActiveTool(MAP_TOOLS.point.id); break;
+        case "m": editorStore.setActiveTool(MAP_TOOLS.measure.id); break;
+        case "s": uiStore.setShowMapSearch(true); break;
+        case "D": mapStore.setUseExactDimensions(!mapStore.getUseExactDimensions); break;
+        case "L": mapStore.setShowMapLabels(!mapStore.getShowMapLabels); break;
+        case "Z": editorStore.updateBoundingBox(); break;
       }
     } else {
       switch (event.key) {
-        case "s": UIStore.actions.setShowMapSearch(true); break;
-        case "D": mapStore.actions.setUseExactDimensions(!mapStore.getters.getUseExactDimensions); break;
-        case "L": mapStore.actions.setShowMapLabels(!mapStore.getters.getShowMapLabels); break;
-        case "Z": actions.updateBoundingBox(); break;
+        case "s": uiStore.setShowMapSearch(true); break;
+        case "D": mapStore.setUseExactDimensions(!mapStore.getUseExactDimensions); break;
+        case "L": mapStore.setShowMapLabels(!mapStore.getShowMapLabels); break;
+        case "Z": editorStore.updateBoundingBox(); break;
       }
     }
   }
@@ -207,19 +208,19 @@ const setupMetaKeys = (event) => {
   if (document.activeElement.tagName.toLowerCase() !== "input" && accessFlags.value.isShapesEditable) {
     switch (event.key) {
       case "Escape":
-        actions.setActiveTool(MAP_TOOLS.select.id);
+        editorStore.setActiveTool(MAP_TOOLS.select.id);
         break;
       case "Backspace":
       case "Delete":
         if (selectedFeatures?.value?.length) {
-          actions.deleteSelectedFeatures();
+          editorStore.deleteSelectedFeatures();
         }
         event.preventDefault();
         break;
       case "a":
         if (event.ctrlKey || event.metaKey) {
           event.preventDefault();
-          actions.selectAllFeatures();
+          editorStore.selectAllFeatures();
         }
         break;
     }

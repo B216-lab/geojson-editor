@@ -21,9 +21,10 @@
 <script setup>
 import { Icon } from "@iconify/vue";
 import { computed } from "vue";
-import { useStoreModule } from "@/composables/useStoreModule.js";
+import { useUIStore } from "@/stores/ui";
+import { useMapStore } from "@/stores/map";
+import { useEditorStore, EDITING_MODE } from "@/stores/editor";
 import { FEATURE_TYPES } from "@/models/Feature.model";
-import { EDITING_MODE } from "@/stores/editor";
 
 const props = defineProps({
   x: { type: Number, default: 0 },
@@ -49,9 +50,10 @@ const iconForShape = (type) => {
   }
 };
 
-const UIStore = useStoreModule("UI");
-const MapStore = useStoreModule("map");
-const accessFlags = computed(() => UIStore.getters.getAccessFlags);
+const uiStore = useUIStore();
+const mapStore = useMapStore();
+const editorStore = useEditorStore();
+const accessFlags = computed(() => uiStore.getAccessFlags);
 const options = computed(() => [
   ...(props.feature && accessFlags.value.isShapesEditable
     ? [
@@ -91,29 +93,28 @@ const openIn2gis = () => {
   return;
 };
 
-const { actions } = useStoreModule("editor");
 const selectOption = (itemId) => {
   switch (itemId) {
     case "modify":
-      actions.setActiveEditMode({
+      editorStore.setActiveEditMode({
         featureId: props.feature?.properties?.id,
         mode: EDITING_MODE.modify.id,
       });
       break;
     case "transform":
-      actions.setActiveEditMode({
+      editorStore.setActiveEditMode({
         featureId: props.feature?.properties?.id,
         mode: EDITING_MODE.transform.id,
       });
       break;
     case "delete":
-      actions.deleteFeatureById({
+      editorStore.deleteFeatureById({
         featureId: props.feature?.properties?.id,
       });
       break;
     case "searchArea":
-      MapStore.actions.setSearchLocation([props.latitude, props.longitude]);
-      UIStore.actions.setShowMapSearch(true);
+      mapStore.setSearchLocation([props.latitude, props.longitude]);
+      uiStore.setShowMapSearch(true);
       break;
     case "copycords":
       copyCoordinates();

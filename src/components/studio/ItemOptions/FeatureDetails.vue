@@ -29,12 +29,13 @@ import { DEFAULT_PROPERTIES } from "@/models/Feature.model";
 import { areaFormatter, distanceFormatter } from "@/utils/formatter";
 import { Icon } from "@iconify/vue";
 import EditablePropertyRow from "./EditablePropertyRow.vue";
-import { useStoreModule } from "@/composables/useStoreModule";
+import { useEditorStore } from "@/stores/editor";
+import { useUIStore } from "@/stores/ui";
 
 const props = defineProps<{ feature: any }>()
-const { actions } = useStoreModule("editor");
-const UIStore = useStoreModule("UI");
-const isShapesEditable = computed(() => UIStore.getters.getAccessFlags.isShapesEditable);
+const editorStore = useEditorStore();
+const uiStore = useUIStore();
+const isShapesEditable = computed(() => uiStore.getAccessFlags.isShapesEditable);
 const defaultProperties = computed(() => {
   const { area, distance, perimeter, pointRadius, radiusScale } = props.feature.properties;
   const rawMeta: Record<string, any> = {
@@ -79,7 +80,7 @@ const generateNextPropertyName = (properties: Record<string, any>) => {
 const addNewProperty = () => {
   if (!isShapesEditable.value) return;
   const propertyName = generateNextPropertyName(customProperties.value);
-  actions.updateFeatureProperties({
+  editorStore.updateFeatureProperties({
     featureId: props.feature?.properties?.id,
     properties: { [propertyName]: "" },
     shouldSync: true,
@@ -87,7 +88,7 @@ const addNewProperty = () => {
 };
 
 const updateProperty = ({ itemId, name, value }: { itemId: string; name: string; value: any }) => {
-  actions.updateFeatureProperties({
+  editorStore.updateFeatureProperties({
     featureId: props.feature?.properties?.id,
     properties: propertyIds.value.reduce((result: Record<string, any>, key: string) => {
       if (key === itemId) {
@@ -103,7 +104,7 @@ const updateProperty = ({ itemId, name, value }: { itemId: string; name: string;
 };
 
 const deleteProperty = (name: string) => {
-  actions.updateFeatureProperties({
+  editorStore.updateFeatureProperties({
     featureId: props.feature?.properties?.id,
     properties: propertyIds.value.reduce((result: Record<string, any>, key: string) => {
       if (key !== name) {

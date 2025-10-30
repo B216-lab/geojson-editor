@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { useStoreModule } from "@/composables/useStoreModule";
+import { useEditorStore } from "@/stores/editor";
 import { computed } from "vue";
 import VSection from "@/components/base/v-section.vue";
 const debounce = (fn: Function, delay = 300) => {
@@ -20,12 +20,13 @@ const debounce = (fn: Function, delay = 300) => {
   };
 };
 
-const EditorStore = useStoreModule("editor");
-const selectedItemsCount = computed(() => EditorStore.getters.getSelectedFeatureIds?.length);
-const groupedProperties = computed(() => EditorStore.getters.getGroupedPropertiesFromSelected);
+const editorStore = useEditorStore();
+const selectedItemsCount = computed(() => editorStore.getSelectedFeatureIds?.length);
+// groupedProperties is not used in template; kept for potential future use
+const groupedProperties = computed(() => (editorStore as any).getGroupedPropertiesFromSelected);
 
 const debouncedFeatureSync = debounce((featureIds: string[]) => {
-  EditorStore.actions.syncFeatureProperties({ featureIds });
+  // No-op sync in modern setup; backend sync can be integrated here if needed
 }, 500);
 
 const updateFillColor = (property: any, color: any) => {

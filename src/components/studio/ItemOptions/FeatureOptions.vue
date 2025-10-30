@@ -18,13 +18,13 @@ import { ref, computed, onMounted } from "vue";
 import { Icon } from "@iconify/vue";
 import FeatureAppearence from "./FeatureAppearence.vue";
 import FeatureDetails from "./FeatureDetails.vue";
-import { useStoreModule } from "@/composables/useStoreModule";
+import { useUIStore } from "@/stores/ui";
 import { FEATURE_TYPES } from "@/models/Feature.model";
 
 defineProps<{ feature: any }>()
 
-const UIStore = useStoreModule("UI");
-const isShapesEditable = computed(() => UIStore.getters.getAccessFlags.isShapesEditable);
+const uiStore = useUIStore();
+const isShapesEditable = computed(() => uiStore.getAccessFlags.isShapesEditable);
 
 const tabs = computed(() => ({
   ...(isShapesEditable.value ? { appearence: { id: 'appearence', name: 'Appearence', component: 'FeatureAppearence' } } : {}),

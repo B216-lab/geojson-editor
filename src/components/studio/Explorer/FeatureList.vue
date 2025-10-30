@@ -23,26 +23,25 @@
 </template>
 
 <script setup>
-import { useStoreModule } from "@/composables/useStoreModule.js";
 import { computed, ref } from "vue";
+import { useEditorStore } from "@/stores/editor";
+import { useUIStore } from "@/stores/ui";
 import FeatureItem from "./FeatureItem.vue";
 import FeatureContextMenu from "./FeatureContextMenu.vue";
 
-const { getters, actions } = useStoreModule("editor");
-const UIStore = useStoreModule("UI");
+const editorStore = useEditorStore();
+const uiStore = useUIStore();
 
-const features = computed(() => getters.getFeatures);
-const hoveredFeatureId = computed(() => getters.getHoveredFeatureId);
+const features = computed(() => editorStore.getFeatures);
+const hoveredFeatureId = computed(() => editorStore.getHoveredFeatureId);
 const featuresContextMenuData = ref(null);
 
-const isShapesEditable = computed(
-  () => UIStore.getters.getAccessFlags.isShapesEditable
-);
+const isShapesEditable = computed(() => uiStore.getAccessFlags.isShapesEditable);
 
 const showFeatureOptions = ($event, feature) => {
   const { clientX, clientY } = $event;
   if (!feature.isSelected) {
-    actions.setSelectedFeatureIds([feature.id]);
+    editorStore.setSelectedFeatureIds([feature.id]);
   }
   featuresContextMenuData.value = {
     x: clientX,

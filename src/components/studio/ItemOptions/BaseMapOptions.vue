@@ -49,25 +49,24 @@
 import VSection from "@/components/base/v-section.vue";
 import { Icon } from "@iconify/vue";
 import VCheckBox from "@/components/base/v-checkbox.vue";
-import { useStoreModule } from "@/composables/useStoreModule.js";
+import { useMapStore } from "@/stores/map";
 import { ref, computed } from "vue";
 
-const store = useStoreModule("map") as any;
-const { getters, actions } = store;
-const styles = computed(() => getters.getAllMapStyles);
+const store = useMapStore() as any;
+const styles = computed(() => store.getAllMapStyles);
 const styleItems = computed(() => Object.values(styles.value || {}) as any[])
-const activeStyle = computed(() => getters.getActiveMapStyleId);
-const showMapLabels = computed(() => getters.getShowMapLabels);
-const getShowPropertiesPopup = computed(() => getters.getShowPropertiesPopup);
+const activeStyle = computed(() => store.getActiveMapStyleId);
+const showMapLabels = computed(() => store.getShowMapLabels);
+const getShowPropertiesPopup = computed(() => store.getShowPropertiesPopup);
 const showDropDownOptions = ref(false);
-const setShowMapLabels = actions.setShowMapLabels;
+const setShowMapLabels = store.setShowMapLabels;
 // const getUseExactDimensions = computed(() => getters.getUseExactDimensions);
 // const setUseExactDimensions = actions.setUseExactDimensions;
-const setShowPropertiesPopup = actions.setShowPropertiesPopup;
+const setShowPropertiesPopup = store.setShowPropertiesPopup;
 
 const openDropDownOptions = () => { if (!showDropDownOptions.value) showDropDownOptions.value = true };
 const selectActiveMapStyle = (mapStyle: string) => {
-  actions.setActiveMapStyleId(mapStyle);
+  store.setActiveMapStyleId(mapStyle);
   showDropDownOptions.value = false;
 };
 </script>
