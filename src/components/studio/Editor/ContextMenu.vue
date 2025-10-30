@@ -21,6 +21,7 @@
 <script setup>
 import { Icon } from "@iconify/vue";
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import { toast } from "vue-sonner";
 import { useUIStore } from "@/stores/ui";
 import { useMapStore } from "@/stores/map";
 import { useEditorStore, EDITING_MODE } from "@/stores/editor";
@@ -79,8 +80,13 @@ const options = computed(() => [
     : []),
 ]);
 
-const copyCoordinates = () => {
-  navigator?.clipboard?.writeText(`${props.latitude}, ${props.longitude}`);
+const copyCoordinates = async () => {
+  try {
+    await navigator?.clipboard?.writeText(`${props.latitude}, ${props.longitude}`);
+    toast.success("Coordinates copied", { description: `${props.latitude}, ${props.longitude}` });
+  } catch (e) {
+    toast.error("Failed to copy coordinates");
+  }
 };
 
 const openIn2gis = () => {
